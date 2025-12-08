@@ -340,7 +340,7 @@
                 <div id="statusMessage" style="display:none; text-align:center; color:#555;">⏳ 업로드 중...</div>
                 <div>
                     <button id="uploadButton" class="button" onclick="uploadContent()">업로드 및 공유하기</button>
-                    <button id="openButton" class="button" onclick="openContent()">부동내역 시트</button>
+                    <!-- <button id="openButton" class="button" onclick="openContent()">부동내역 시트</button> -->
                 </div>
             </div>
 
@@ -501,7 +501,7 @@ async function uploadContent() {
         data = {
             type: 'Para/IP 변경',
             site: getValue("0. Site :"),
-            machine: getValue("1. 호기 :"),
+            machine: getValue("1. 호기 :"), // # 추가하든, ' ' ' 추가하든
             process: getValue("2-1. Machine :"),
             unit: getValue("2-2. UNIT :"),
             assy: getValue("2-3. Assy' :"),
@@ -1590,10 +1590,6 @@ document.getElementById('trouble-unit').addEventListener('change', function () {
                     alert('클립보드 복사에 실패했습니다. 수동으로 텍스트를 선택하여 복사하세요.');
                 });
         }
-
-function openContent() {
-  window.open("https://docs.google.com/spreadsheets/d/1OUhTAF6qU_0rWP_oPwtGOS-cczSPaPxhJQzpw0L1xro/edit?usp=sharing", "_blank");
-}
 
     </script>
 
