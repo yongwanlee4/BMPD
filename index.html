@@ -431,7 +431,8 @@ async function uploadContent() {
             lookahead = '(?=\\n(6\\.\\s*원인\\s*:\\s*|7\\.\\s*조치\\s*:\\s*|\\s*$))';
             if (label === "5. 현상 :") lookahead = '(?=\\n(6\\.\\s*원인\\s*:\\s*|7\\.\\s*조치\\s*:\\s*|\\s*$))';
             else if (label === "6. 원인 :") lookahead = '(?=\\n(7\\.\\s*조치\\s*:\\s*|\\s*$))';
-            else if (label === "7. 조치 :") lookahead = '(?=\\n(\\s*$))'; // 7.조치 다음은 끝
+            // else if (label === "7. 조치 :") lookahead = '(?=\\n(\\s*$))'; // 7.조치 다음은 끝
+            else if (label === "7. 조치 :") lookahead = '(?=\\n(\\s*$)|$)';
             else if (!isMultiLine) lookahead = '(?=\\n|$)'; // 단일 라인 항목은 다음 줄바꿈까지만
         } else {
             // 파라미터 양식: 8.변경사유 다음 끝
