@@ -484,7 +484,7 @@ async function uploadContent() {
         data = {
             type: getValue("종류:"),
             site: getValue("0. Site :"),
-            machine: getValue("1. 호기 :"),
+            machine: "'" + getValue("1. 호기 :"),
             process: getValue("2-1. Machine :"),
             unit: getValue("2-2. Unit :"),
             assy: getValue("2-3. Assy' :"),
@@ -501,7 +501,7 @@ async function uploadContent() {
         data = {
             type: 'Para/IP 변경',
             site: getValue("0. Site :"),
-            machine: getValue("1. 호기 :"), // # 추가하든, ' ' ' 추가하든
+            machine: "'" + getValue("1. 호기 :"), // # 추가하든, ' ' ' 추가하든
             process: getValue("2-1. Machine :"),
             unit: getValue("2-2. Unit :"),
             assy: getValue("2-3. Assy' :"),
