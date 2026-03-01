@@ -1,7 +1,7 @@
-
+ 
 <!DOCTYPE html>
 <html lang="ko"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-   
+  
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ESHD L&S 파라변경/부동내역 공유 양식</title>
     <style>
@@ -140,19 +140,19 @@
         <div class="header">
             <h1>ESHD L&S 파라변경이력 부동내역 양식</h1>
             <p>Parameter 변경이력 및 부동&amp;작업내역 양식 입력</p>
-            <p>(Parameter Change Log & Trouble Record</p>
+            <p> (Parameter Change Log & Trouble Record)</p>
         </div>
-       
+      
         <div class="tab-container">
           <div class="tab" onclick="switchTab(&#39;parameterForm&#39;)">Para/IP 변경공유</div>
           <div class="tab active" onclick="switchTab(&#39;troubleForm&#39;)">부동내역(Trouble) 공유</div>
         </div>
-       
+      
         <div class="form-container">
             <!-- 파라미터 변경 폼 -->
             <div id="parameterForm" class="form">
             <!-- 원래거 div id="parameterForm" class="form active" -->
-
+ 
                 <div class="form-group">
                     <label for="para-site">0. Site :</label>
                     <select id="para-site">
@@ -160,16 +160,16 @@
                         <option value="L-H">L-H</option>
                     </select>
                 </div>
-
+ 
                 <div class="form-group">
                     <label for="para-machine">1. 호기(Unit) :</label>
                     <select id="para-machine">
                         <option value="-">-</option>
-
-
+ 
+ 
                     </select>
                 </div>
-
+ 
                 <div class="form-group">
                     <label for="para-process">2-1. Machine :</label>
                     <select id="para-process">
@@ -181,25 +181,25 @@
                         <option value="Inspection">Inspection</option> -->
                     </select>
                 </div>
-
-
+ 
+ 
                 <div class="form-group">
                     <label for="para-unit">2-2. Unit :</label>
                     <select id="para-unit">
                         <option value="-">-</option>
-
+ 
                     </select>
                 </div>
-
+ 
                 <div class="form-group">
                     <label for="para-assy">2-3. Assy' :</label>
                     <select id="para-assy">
                         <option value="-">-</option>
-
+ 
                     </select>
                 </div>
-
-
+ 
+ 
                 <div class="form-group">
                     <label for="para-time">3. 변경시간(Time) :</label>
                     <input type="datetime-local" id="para-time">
@@ -226,9 +226,9 @@
                 </div>
                 <button class="button" onclick="generateParameterText()">양식 생성하기</button>
             </div>
-           
+          
             <!-- 부동내역 폼 -->
-
+ 
             <!-- 원래거 div id="troubleForm" class="form" -->
             <div id="troubleForm" class="form active">
                 <div class="form-group">
@@ -238,9 +238,9 @@
                         <option value="PD">PD</option>
                         <option value="PM">PM</option>
                         <option value="생산준비">생산준비(prepearation)</option>
-                    </select>                  
+                    </select>                 
                 </div>
-
+ 
                 <div class="form-group">
                     <label for="trouble-site">0. Site :</label>
                     <select id="trouble-site">
@@ -248,7 +248,7 @@
                         <option value="L-H">L-H</option>
                     </select>
                 </div>
-
+ 
                 <div class="form-group">
                     <label for="trouble-machine">1. 호기(Line) :</label>
                     <select id="trouble-machine">
@@ -266,24 +266,24 @@
                         <option value="Inspection">Inspection</option> -->
                     </select>
                 </div>
-
+ 
                 <div class="form-group">
                     <label for="trouble-unit">2-2. Unit :</label>
                     <select id="trouble-unit">
                         <option value="-">-</option>
-
+ 
                     </select>
                 </div>
-
+ 
                 <div class="form-group">
                     <label for="trouble-assy">2-3. Assy' :</label>
                     <select id="trouble-assy">
                         <option value="-">-</option>
-
+ 
                     </select>
                 </div>
-
-
+ 
+ 
                 <div class="form-group">
                     <label for="trouble-time">3-1. 발생시간(trouble-time) :</label>
                     <input type="datetime-local" id="trouble-time">
@@ -310,7 +310,7 @@
                 </div>
                 <button class="button" onclick="generateTroubleText()">양식 생성하기</button>
             </div>
-           
+          
             <!-- 결과 표시 영역 -->
             <!-- <div id="result" class="result">
                 <p id="resultText"></p>
@@ -319,7 +319,7 @@
                     <button id="openButton" class="button" onclick="openContent()">부동내역 시트</button>
                 </div>
             </div> -->
-
+ 
             <div id="result" class="result">
                 <p id="resultText"></p>
                 <div id="statusMessage" style="display:none; text-align:center; color:#555;">⏳ 업로드 중...</div>
@@ -328,65 +328,65 @@
                     <!-- <button id="openButton" class="button" onclick="openContent()">부동내역 시트</button> -->
                 </div>
             </div>
-
+ 
             <div id="status-alert" class="alert-box">
                 <span id="alert-message"></span>
             </div>
         </div>
-       
+      
         <div class="footer">
             @
         </div>
     </div>
-
+ 
     <script>
-       
+      
 // site 값에 따라 process 옵션 목록 정의
 const siteToProcess = {
   MI1:       ['Electrode Supply', 'Lamination', 'Stacking', 'Taper', 'Inspection'],
   WA5:       ['Electrode Supply', 'Lamination', 'Stacking', 'Taper', 'Inspection'],
   default:   ['Electrode Supply', 'Lamination', 'D-Stacking', 'Taper', 'Inspection']
 };
-
+ 
 const siteEl = document.getElementById('trouble-site');
 const procEl = document.getElementById('trouble-process');
 const siteE2 = document.getElementById('para-site');
 const procE2 = document.getElementById('para-process');
-
+ 
 // site 변경 시 process 옵션 업데이트 함수
 function updateProcessOptions() {
     // siteToProcess[site] 가 없으면 default 사용
     const list = siteToProcess[siteEl.value] || siteToProcess.default;
     const list_para = siteToProcess[siteE2.value] || siteToProcess.default;
-
+ 
     // 기존 옵션 초기화
     procEl.innerHTML = '';
     procEl.appendChild(new Option('-', '-'));
-
+ 
     procE2.innerHTML = '';
     procE2.appendChild(new Option('-', '-'));
-
+ 
     // 새로 정의된 옵션 삽입
     list.forEach(p => {
         procEl.appendChild(new Option(p, p));
     });
-
+ 
     list_para.forEach(p => {
         procE2.appendChild(new Option(p, p));
     });
-
+ 
     // 선택 초기화
     procEl.value = '-';
     procE2.value = '-';
 }
-
+ 
 // 페이지 로드시와 site 변경 시에 호출
 siteEl.addEventListener('change', updateProcessOptions);
 siteE2.addEventListener('change', updateProcessOptions);
 updateProcessOptions();  // 최초 로드시에도 적용
-
+ 
 const MAIL_SUBJECT = 'PRI L&S 공유(자동 발송)';
-
+ 
 const statusMessage = document.getElementById('statusMessage');
 const resultText = document.getElementById('resultText');
 async function uploadContent() {
@@ -395,19 +395,19 @@ async function uploadContent() {
     const resultText = document.getElementById('resultText');
     const statusAlert = document.getElementById('status-alert');
     const alertMessage = document.getElementById('alert-message');
-
+ 
     // 2. 업로드 시작: 버튼 비활성화, 알림창 표시 및 메시지 설정
     uploadButton.disabled = true;
     alertMessage.innerText = '⏳ 업로드 및 공유 진행 중...';
     statusAlert.classList.add('show');
-
+ 
     // 💡 핵심 수정 시작: 전체 텍스트를 가져와 멀티라인 파싱을 준비합니다.
     const fullText = resultText.innerText.trim();
     const isTrouble = fullText.startsWith("[부동&작업 공유]");
-
+ 
     // 라벨 목록 (generateTroubleText / generateParameterText와 반드시 동일해야 함)
     const troubleLabels = [
-        "종류(Trouble):",
+        "종류:",
         "0. Site :",
         "1. 호기(Line) :",
         "2-1. Machine :",
@@ -420,7 +420,7 @@ async function uploadContent() {
         "6. 원인(reason) :",
         "7. 조치(action) :",
     ];
-
+ 
     const paraLabels = [
         "0. Site :",
         "1. 호기(Line) :",
@@ -434,18 +434,18 @@ async function uploadContent() {
         "7. 변경값(para-after) :",
         "8. 변경사유(reason) :",
     ];
-
+ 
     // ⚙️ 새 getValue: 정규식 안 쓰고, 라벨 위치로만 자르기
     const getValue = (label) => {
         const text = fullText;                 // uploadContent 안에 이미 있는 전체 문자열
         const labels = isTrouble ? troubleLabels : paraLabels;
-
+ 
         // 1) 이 라벨이 어디 있는지 찾기
         const start = text.indexOf(label);
         if (start === -1) return "";           // 라벨 없으면 빈 문자열
-
+ 
         const valueStart = start + label.length;
-
+ 
         // 2) 이 라벨 뒤에 나오는 "다음 라벨"의 위치를 찾기
         let nextIndex = text.length;
         for (const lb of labels) {
@@ -455,16 +455,16 @@ async function uploadContent() {
                 nextIndex = idx;
             }
         }
-
+ 
         // 3) 현재 라벨 뒤부터, 다음 라벨 직전까지가 이 항목의 값
         const raw = text.slice(valueStart, nextIndex);
-
+ 
         return raw.trim();
     };
-
-   
+ 
+  
     let data;
-
+ 
     if (isTrouble) {
         data = {
             type: getValue("종류(Trouble):"),
@@ -505,13 +505,13 @@ async function uploadContent() {
         data.complete = data.para_reason;
         delete data.para_reason;
     }
-   
+  
     // 이 시점에서 data 객체의 'problem', 'reason', 'action' 값은
     // 입력된 여러 줄 내용(줄바꿈 문자 \n 포함)을 온전히 가지고 있습니다.
     // 따라서 백엔드(Sheets/Worker)로 전송되어도 줄바꿈이 유지됩니다.
-
+ 
     const WORKER_BASE = "https://fragrant-band-2b4e.limchickennn.workers.dev";
-   
+  
     const fetchPromises = [
         fetch("https://appendtosheet-ymlfqhclja-uc.a.run.app", {
             method: "POST",
@@ -524,20 +524,20 @@ async function uploadContent() {
             body: JSON.stringify(data),
         }),
     ];
-
+ 
     try {
         // 4. 모든 비동기 요청을 병렬로 실행
         await Promise.all(fetchPromises);
-       
+      
         // 5. 성공 시: 메시지 변경 및 공유 함수 호출 (shareContentWithRetry 함수는 그대로 있다고 가정)
         alertMessage.innerText = '✅ 공유 시트 업로드 성공!';
         shareContentWithRetry();
-
+ 
     } catch (error) {
         // 6. 실패 시: 메시지 변경 및 오류 로깅
         console.error("업로드 오류:", error);
         alertMessage.innerText = '❌ 업로드 중 오류 발생!';
-
+ 
     } finally {
         // 7. 일정 시간 후 알림창 숨기고, 버튼 활성화
         setTimeout(() => {
@@ -546,20 +546,20 @@ async function uploadContent() {
         }, 5000); // 5초 후에 알림창 숨김
     }
 }
-
-
+ 
+ 
 document.getElementById('para-site').addEventListener('change', function () {
     const site = this.value;
     const machineSelect = document.getElementById('para-machine');
     machineSelect.innerHTML = ''; // 기존 옵션 제거
-
+ 
     let options = [];
     if (site === 'L-H') {
         options = ['-', '1-1', '1-2', '1-3', '2-1', '2-2', '2-3','3-1', '3-2', '3-3', '4-1', '4-2', '4-3', '5-1', '5-2', '5-3', '6-1', '6-2', '6-3', '6-4','HC1', 'HC2']
     } else {
         options = ['기타']; // 다른 site 선택 시 기본 옵션
     }
-
+ 
     options.forEach(function (opt) {
         const option = document.createElement('option');
         option.value = opt;
@@ -567,21 +567,21 @@ document.getElementById('para-site').addEventListener('change', function () {
         machineSelect.appendChild(option);
     });
 });
-
+ 
 // TroubleForm도 동일하게
 document.querySelectorAll('#troubleForm select[id="trouble-site"]')[0]
     ?.addEventListener('change', function () {
     const site = this.value;
     const machineSelect = document.getElementById('trouble-machine');
     machineSelect.innerHTML = '';
-
+ 
     let options = [];
     if (site === 'L-H') {
         options = ['-', '1-1', '1-2', '1-3', '2-1', '2-2', '2-3','3-1', '3-2', '3-3', '4-1', '4-2', '4-3', '5-1', '5-2', '5-3', '6-1', '6-2', '6-3', '6-4','HC1', 'HC2'];
     } else {
         options = ['기타']; // 다른 site 선택 시 기본 옵션
     }
-
+ 
     options.forEach(function (opt) {
         const option = document.createElement('option');
         option.value = opt;
@@ -589,19 +589,19 @@ document.querySelectorAll('#troubleForm select[id="trouble-site"]')[0]
         machineSelect.appendChild(option);
     });
 });
-
-
+ 
+ 
 // 파라유닛 선택항목 함수
 document.getElementById('para-process').addEventListener('change', function () {
     const site = document.getElementById('para-site').value;
     const process = this.value;
     const unitSelect = document.getElementById('para-unit');
-
+ 
     // 기존 옵션 제거
     unitSelect.innerHTML = '';
-
+ 
     let options = [];
-
+ 
     if (site === 'MI1' || site === 'WA5') {
         if (process === 'Electrode Supply') {
             options = ['-', 'Electrode. Unwinder'];
@@ -648,7 +648,7 @@ document.getElementById('para-process').addEventListener('change', function () {
             options = ['기타']; // 기본값 또는 공정 외 항목 처리
         }
     }
-
+ 
     else {
         if (process === 'Electrode Supply') {
             options = ['-', 'Pancake.Loader'];
@@ -665,7 +665,7 @@ document.getElementById('para-process').addEventListener('change', function () {
             options = ['기타']; // 기본값 또는 공정 외 항목 처리
         }
     }
-
+ 
     options.forEach(function (opt) {
         const option = document.createElement('option');
         option.value = opt;
@@ -673,18 +673,18 @@ document.getElementById('para-process').addEventListener('change', function () {
         unitSelect.appendChild(option);
     });
 });
-
+ 
 // 트러블유닛 선택항목 함수
 document.getElementById('trouble-process').addEventListener('change', function () {
     const site = document.getElementById('trouble-site').value;
     const process = this.value;
     const unitSelect = document.getElementById('trouble-unit');
-
+ 
     // 기존 옵션 제거
     unitSelect.innerHTML = '';
-
+ 
     let options = [];
-
+ 
     if (site === 'MI1'|| site === 'WA5') {
         if (process === 'Electrode Supply') {
             options = ['-', 'Electrode. Unwinder'];
@@ -730,7 +730,7 @@ document.getElementById('trouble-process').addEventListener('change', function (
         } else {
             options = ['기타']; // 기본값 또는 공정 외 항목 처리
         }
-
+ 
     }
     else {
         if (process === 'Electrode Supply') {
@@ -748,7 +748,7 @@ document.getElementById('trouble-process').addEventListener('change', function (
             options = ['기타']; // 기본값 또는 공정 외 항목 처리
         }
     }
-
+ 
     options.forEach(function (opt) {
         const option = document.createElement('option');
         option.value = opt;
@@ -756,14 +756,14 @@ document.getElementById('trouble-process').addEventListener('change', function (
         unitSelect.appendChild(option);
     });
 });
-
+ 
 // para-assy 연동 (Unit에 따라 Assy 설정)
 document.getElementById('para-unit').addEventListener('change', function () {
     const site = document.getElementById('para-site').value;
     const unit = this.value;
     const assySelect = document.getElementById('para-assy');
     assySelect.innerHTML = '';
-
+ 
     let options = [];
     if (site == 'MI1' || site === 'WA5') {
         if (unit === 'Electrode.Unwinder') {
@@ -932,7 +932,7 @@ document.getElementById('para-unit').addEventListener('change', function () {
             options = ['-'];
         }
     }
-
+ 
     else {
         if (unit === 'Pancake.Loader') {
             options = ['-', '[01/A] Pancake. Conveyor', '[01/B] Pancake. Conveyor', '[01/C] Pancake. Conveyor', '[02/A] Pancake. Conveyor', '[02B] Pancake. Conveyor', '[02/C] Pancake. Conveyor', 'Pancake. Hoist', '[01/A] Pancake. Unwinder', '[02/A] Pancake. Unwinder', '[03/A] Pancake. Unwinder', '[04/A] Pancake. Unwinder', '[01/B] Pancake. Unwinder', '[02/B] Pancake. Unwinder', '[03/B] Pancake. Unwinder', '[04/B] Pancake. Unwinder', '[01/A] Electrode. Vacuum Plate', '[02/A] Electrode. Vacuum Plate', '[03/A] Electrode. Vacuum Plate', '[04/A] Electrode. Vacuum Plate', '[01/B] Electrode. Vacuum Plate', '[02/B] Electrode. Vacuum Plate', '[03/B] Electrode. Vacuum Plate', '[04/B] Electrode. Vacuum Plate', '[01/A] Electrode. Auto Splicer Cutter', '[02/A] Electrode. Auto Splicer Cutter', '[03/A] Electrode. Auto Splicer Cutter', '[04/A] Electrode. Auto Splicer Cutter', '[01/B] Electrode. Auto Splicer Cutter', '[02/B] Electrode. Auto Splicer Cutter', '[03/B] Electrode. Auto Splicer Cutter', '[04/B] Electrode. Auto Splicer Cutter', 'Electrode. Tape Feeder', 'Electrode. Scrape Box', '[01/A] Electrode. Idle Roller', '[02/A] Electrode. Idle Roller', '[01/B] Electrode. Idle Roller', '[02/B] Electrode. Idle Roller', '[01/A] Dancer. Roller', '[02/A] Dancer. Roller', '[01/B] Dancer. Roller', '[02/B] Dancer. Roller', '[01/A] Adjust Roller', '[02/A] Adjust Roller', '[01/B] Adjust Roller', '[02/B] Adjust Roller', '[01/A] Electrode. EPC', '[02/A] Electrode. EPC', '[03/A] Electrode. EPC', '[04/A] Electrode. EPC', '[01/B] Electrode. EPC', '[02/B] Electrode. EPC', '[03/B] Electrode. EPC', '[04/B] Electrode. EPC', '[01/A] Winder Diameter Sensor', '[02/A] Winder Diameter Sensor', '[03/A] Winder Diameter Sensor', '[04/A] Winder Diameter Sensor', '[01/B] Winder Diameter Sensor', '[02/B] Winder Diameter Sensor', '[03/B] Winder Diameter Sensor', '[04/B] Winder Diameter Sensor', '[01/A] PET tape sensor', '[02/A] PET tape sensor', '[03/A] PET tape sensor', '[04/A] PET tape sensor', '[01/B] PET tape sensor', '[02/B] PET tape sensor', '[03/B] PET tape sensor', '[04/B] PET tape sensor', '[01] Tab Direction Vision', '[02] Tab Direction Vision', 'ATR'];
@@ -988,7 +988,7 @@ document.getElementById('para-unit').addEventListener('change', function () {
             options = ['-'];
         }
     }
-
+ 
     options.forEach(function (opt) {
         const option = document.createElement('option');
         option.value = opt;
@@ -996,16 +996,16 @@ document.getElementById('para-unit').addEventListener('change', function () {
         assySelect.appendChild(option);
     });
 });
-
+ 
 // trouble-assy 연동 (Unit에 따라 Assy 설정)
 document.getElementById('trouble-unit').addEventListener('change', function () {
     const site = document.getElementById('trouble-site').value;
     const unit = this.value;
     const assySelect = document.getElementById('trouble-assy');
     assySelect.innerHTML = '';
-
+ 
     let options = [];
-
+ 
     if (site == 'MI1' || site == 'WA5') {
         if (unit === 'Electrode.Unwinder') {
             options = [
@@ -1228,7 +1228,7 @@ document.getElementById('trouble-unit').addEventListener('change', function () {
             options = ['-'];
         }
     }
-
+ 
     options.forEach(function (opt) {
         const option = document.createElement('option');
         option.value = opt;
@@ -1236,18 +1236,18 @@ document.getElementById('trouble-unit').addEventListener('change', function () {
         assySelect.appendChild(option);
     });
 });
-
+ 
         // 페이지 로드 시 현재 시간 설정
         window.onload = function() {
             setCurrentDateTime('para-time');
             setCurrentDateTime('trouble-time');
             setCurrentDateTime('trouble-complete');
         };
-
+ 
         // 1) 요소 참조
         const startEl    = document.getElementById('trouble-time');
         const completeEl = document.getElementById('trouble-complete');
-
+ 
         // 2) 현재 시각 기준 +1일(24h) 계산 함수
         function getMaxIso() {
             const now     = new Date();
@@ -1255,15 +1255,15 @@ document.getElementById('trouble-unit').addEventListener('change', function () {
             // datetime-local 에 맞춘 형식: YYYY-MM-DDThh:mm
             return plusOne.toISOString().slice(0,16);
         }
-
+ 
         // 3) max 속성 갱신 및 값 보정 함수
         function updateMaxConstraints() {
             const maxIso = getMaxIso();
-
+ 
             // 입력 필드의 max 속성 설정
             startEl.max    = maxIso;
             completeEl.max = maxIso;
-
+ 
             // 이미 선택된 값이 max를 넘었으면 보정
             if (startEl.value && startEl.value > maxIso) {
                 startEl.value = maxIso;
@@ -1274,7 +1274,7 @@ document.getElementById('trouble-unit').addEventListener('change', function () {
                 alert('⚠️ 조치완료 시간은 현재 시각부터 24시간 이내여야 합니다.');
             }
         }
-
+ 
         // 4) 페이지 로드 시, 발생시간 변경 시마다 max 갱신
         window.addEventListener('load', () => {
             updateMaxConstraints();
@@ -1294,8 +1294,8 @@ document.getElementById('trouble-unit').addEventListener('change', function () {
                 alert('⚠️ 조치완료 시간은 발생시간 이후여야 합니다.');
             }
         });
-
-       
+ 
+      
         // 현재 시간 설정 함수
         function setCurrentDateTime(elementId) {
             const now = new Date();
@@ -1304,11 +1304,11 @@ document.getElementById('trouble-unit').addEventListener('change', function () {
             const day = String(now.getDate()).padStart(2, '0');
             const hours = String(now.getHours()).padStart(2, '0');
             const minutes = String(now.getMinutes()).padStart(2, '0');
-           
+          
             const dateTimeValue = `${year}-${month}-${day}T${hours}:${minutes}`;
             document.getElementById(elementId).value = dateTimeValue;
         }
-       
+      
         // 탭 전환 함수
         function switchTab(formId) {
             // 모든 탭과 폼 비활성화
@@ -1318,7 +1318,7 @@ document.getElementById('trouble-unit').addEventListener('change', function () {
             document.querySelectorAll('.form').forEach(form => {
                 form.classList.remove('active');
             });
-           
+          
             // 선택된 탭과 폼 활성화
             if (formId === 'parameterForm') {
                 document.querySelectorAll('.tab')[0].classList.add('active');
@@ -1327,28 +1327,28 @@ document.getElementById('trouble-unit').addEventListener('change', function () {
                 document.querySelectorAll('.tab')[1].classList.add('active');
                 document.getElementById('troubleForm').classList.add('active');
             }
-           
+          
             // 결과 숨기기
             document.getElementById('result').style.display = 'none';
         }
-       
+      
         // 날짜 형식화 함수
         function formatDateTime(dateTimeStr) {
             if (!dateTimeStr) return '';
-           
+          
             const date = new Date(dateTimeStr);
             const year = date.getFullYear();
             const month = date.getMonth() + 1;
             const day = date.getDate();
             const hours = date.getHours();
             const minutes = String(date.getMinutes()).padStart(2, '0');
-           
+          
             const ampm = hours >= 12 ? '오후' : '오전';
             const hour12 = hours % 12 || 12;
-           
+          
             return `${year}년 ${month}월 ${day}일 ${ampm} ${hour12}:${minutes}`;
         }
-       
+      
         // 파라미터 변경 양식 생성 함수
         function generateParameterText() {
             const site = document.getElementById('para-site').value;
@@ -1362,7 +1362,7 @@ document.getElementById('trouble-unit').addEventListener('change', function () {
             const after = document.getElementById('para-after').value;
             const worker = document.getElementById('para-worker').value;
             const reason = document.getElementById('para-reason').value;
-           
+          
             let text = `♣파라미터, IP 변경 공유\n`;
             text += `종류: 파라미터 변경\n`;
             text += `0. Site : ${site}\n`;
@@ -1376,12 +1376,12 @@ document.getElementById('trouble-unit').addEventListener('change', function () {
             text += `6. 이전값 : ${before}\n`;
             text += `7. 변경값 : ${after}\n`;
             text += `8. 변경사유 : ${reason}`;
-           
+          
             // 결과 표시
             document.getElementById('resultText').innerText = text;
             document.getElementById('result').style.display = 'block';
         }
-       
+      
         // 부동내역 양식 생성 함수
         function generateTroubleText() {
             const type = document.getElementById('trouble-type').value;
@@ -1396,26 +1396,26 @@ document.getElementById('trouble-unit').addEventListener('change', function () {
             const problem = document.getElementById('trouble-problem').value;
             const reason = document.getElementById('trouble-reason').value;
             const action = document.getElementById('trouble-action').value;
-           
+          
             let text = `[부동&작업 공유]\n`;
-            text += `종류(Trouble): ${type}\n`;
+            text += `종류: ${type}\n`;
             text += `0. Site : ${site}\n`;
-            text += `1. 호기(Line) : ${machine}\n`;
+            text += `1. 호기 : ${machine}\n`;
             text += `2-1. Machine : ${process}\n`;
             text += `2-2. Unit : ${unit}\n`;
             text += `2-3. Assy' : ${assy}\n`;
-            text += `3-1. 발생시간(trouble-time) : ${time}\n`;
-            text += `3-2. 조치완료(trouble-complete) : ${complete}\n`;
-            text += `4. 작업자(worker) : ${worker}\n`;
-            text += `5. 현상(problem) : ${problem}\n`;
-            text += `6. 원인(reason) : ${reason}\n`;
-            text += `7. 조치(action) : ${action}`;
-           
+            text += `3-1. 발생시간 : ${time}\n`;
+            text += `3-2. 조치완료 : ${complete}\n`;
+            text += `4. 작업자 : ${worker}\n`;
+            text += `5. 현상 : ${problem}\n`;
+            text += `6. 원인 : ${reason}\n`;
+            text += `7. 조치 : ${action}`;
+          
             // 결과 표시
             document.getElementById('resultText').innerText = text;
             document.getElementById('result').style.display = 'block';
         }
-       
+      
         // 텍스트 복사 함수
         function copyText() {
             const text = document.getElementById('resultText').innerText;
@@ -1428,7 +1428,7 @@ document.getElementById('trouble-unit').addEventListener('change', function () {
                     alert('클립보드 복사에 실패했습니다. 수동으로 텍스트를 선택하여 복사하세요.');
                 });
         }
-
+ 
         function copyTextSafe(text) {
             // 1) 최신 API 시도
             if (navigator.clipboard && window.isSecureContext) {
@@ -1443,7 +1443,7 @@ document.getElementById('trouble-unit').addEventListener('change', function () {
                 fallbackCopy(text);
             }
         }
-
+ 
         function fallbackCopy(text) {
             const textarea = document.createElement("textarea");
             textarea.value = text;
@@ -1452,7 +1452,7 @@ document.getElementById('trouble-unit').addEventListener('change', function () {
             document.body.appendChild(textarea);
             textarea.focus();
             textarea.select();
-
+ 
             try {
                 document.execCommand("copy");
                 alert("✅ 텍스트가 클립보드에 복사되었습니다. (폴백)");
@@ -1463,12 +1463,12 @@ document.getElementById('trouble-unit').addEventListener('change', function () {
                 document.body.removeChild(textarea);
             }
         }
-       
+      
         // 공유하기 함수
         function shareContent() {
             const text = document.getElementById('resultText').innerText;
-            const title = 'ESHD JF2 공유 내용';
-           
+            const title = 'ESMI2 JF2 공유 내용';
+          
             // Web Share API 지원 확인
             if (navigator.share) {
                 navigator.share({
@@ -1488,11 +1488,11 @@ document.getElementById('trouble-unit').addEventListener('change', function () {
                 fallbackToCopy(text);
             }
         }
-
+ 
         async function shareContentWithRetry(maxRetries = 2) {
             const text = document.getElementById("resultText").innerText;
-            const title = "ESHD L&S 공유 내용";
-
+            const title = "PRI L&S 공유 내용";
+ 
             for (let attempt = 1; attempt <= maxRetries; attempt++) {
                 try {
                     if (navigator.share) {
@@ -1504,7 +1504,7 @@ document.getElementById('trouble-unit').addEventListener('change', function () {
                     }
                 } catch (err) {
                     console.warn(`⚠️ 공유 실패 (시도 ${attempt}):`, err);
-
+ 
                     if (attempt === maxRetries) {
                         // 마지막 실패 → 클립보드 복사 폴백
                         copyTextSafe(text);
@@ -1513,7 +1513,7 @@ document.getElementById('trouble-unit').addEventListener('change', function () {
                 }
             }
         }
-       
+      
         // 클립보드 복사 대체 방법
         function fallbackToCopy(text) {
             navigator.clipboard.writeText(text)
@@ -1525,8 +1525,8 @@ document.getElementById('trouble-unit').addEventListener('change', function () {
                     alert('클립보드 복사에 실패했습니다. 수동으로 텍스트를 선택하여 복사하세요.');
                 });
         }
-
+ 
     </script>
-
-
+ 
+ 
 </body></html>
