@@ -398,7 +398,7 @@ async function uploadContent() {
 
     // 라벨 목록 (generateTroubleText / generateParameterText와 반드시 동일해야 함)
     const troubleLabels = [
-        "종류:",
+        "종류(Trouble) :",
         "0. Site :",
         "1. 호기(Line) :",
         "2-1. Machine :",
@@ -593,7 +593,7 @@ document.getElementById('para-process').addEventListener('change', function () {
 
     let options = [];
 
-    if (site === 'MI1' || site === 'WA5') {
+    if (site === 'L-H') {
         if (process === 'Electrode Supply') {
             options = ['-', 'Electrode. Unwinder'];
         }
@@ -1355,18 +1355,18 @@ document.getElementById('trouble-unit').addEventListener('change', function () {
             const reason = document.getElementById('para-reason').value;
            
             let text = `♣파라미터, IP 변경 공유\n`;
-            text += `종류: 파라미터 변경\n`;
+            text += `종류(Trouble): 파라미터 변경\n`;
             text += `0. Site : ${site}\n`;
-            text += `1. 호기 : ${machine}\n`;
+            text += `1. 호기(Line) : ${machine}\n`;
             text += `2-1. Machine : ${process}\n`;
             text += `2-2. Unit : ${unit}\n`;
             text += `2-3. Assy' : ${assy}\n`;
-            text += `3. 변경시간 : ${time}\n`;
-            text += `4. 변경자 : ${worker}\n`;
-            text += `5. 변경Para : ${parameter}\n`;
-            text += `6. 이전값 : ${before}\n`;
-            text += `7. 변경값 : ${after}\n`;
-            text += `8. 변경사유 : ${reason}`;
+            text += `3. 변경시간(Time) : ${time}\n`;
+            text += `4. 변경자(Worker) : ${worker}\n`;
+            text += `5. 변경Para(Parameter) : ${parameter}\n`;
+            text += `6. 이전값(para-before) : ${before}\n`;
+            text += `7. 변경값(para-after) : ${after}\n`;
+            text += `8. 변경사유(reason) : ${reason}`;
            
             // 결과 표시
             document.getElementById('resultText').innerText = text;
@@ -1389,18 +1389,18 @@ document.getElementById('trouble-unit').addEventListener('change', function () {
             const action = document.getElementById('trouble-action').value;
            
             let text = `[부동&작업 공유]\n`;
-            text += `종류: ${type}\n`;
+            text += `종류(Trouble): ${type}\n`;
             text += `0. Site : ${site}\n`;
-            text += `1. 호기 : ${machine}\n`;
+            text += `1. 호기(Line) : ${machine}\n`;
             text += `2-1. Machine : ${process}\n`;
             text += `2-2. Unit : ${unit}\n`;
             text += `2-3. Assy' : ${assy}\n`;
-            text += `3-1. 발생시간 : ${time}\n`;
-            text += `3-2. 조치완료 : ${complete}\n`;
-            text += `4. 작업자 : ${worker}\n`;
-            text += `5. 현상 : ${problem}\n`;
-            text += `6. 원인 : ${reason}\n`;
-            text += `7. 조치 : ${action}`;
+            text += `3-1. 발생시간(trouble-time) : ${time}\n`;
+            text += `3-2. 조치완료(trouble-complete) : ${complete}\n`;
+            text += `4. 작업자(worker) : ${worker}\n`;
+            text += `5. 현상(problem) : ${problem}\n`;
+            text += `6. 원인(reason) : ${reason}\n`;
+            text += `7. 조치(action) : ${action}`;
            
             // 결과 표시
             document.getElementById('resultText').innerText = text;
@@ -1458,7 +1458,7 @@ document.getElementById('trouble-unit').addEventListener('change', function () {
         // 공유하기 함수
         function shareContent() {
             const text = document.getElementById('resultText').innerText;
-            const title = 'ESMI2 JF2 공유 내용';
+            const title = 'ESHD JF2 공유 내용';
            
             // Web Share API 지원 확인
             if (navigator.share) {
@@ -1482,7 +1482,7 @@ document.getElementById('trouble-unit').addEventListener('change', function () {
 
         async function shareContentWithRetry(maxRetries = 2) {
             const text = document.getElementById("resultText").innerText;
-            const title = "PRI L&S 공유 내용";
+            const title = "ESHD L&S 공유 내용";
 
             for (let attempt = 1; attempt <= maxRetries; attempt++) {
                 try {
