@@ -139,7 +139,8 @@
     <div class="container">
         <div class="header">
             <h1>ESHD L&S 파라변경이력 부동내역 양식</h1>
-            <p>Parameter 변경이력 및 부동&amp;작업내역 양식 입력(Parameter Change Log & Trouble Record</p>
+            <p>Parameter 변경이력 및 부동&amp;작업내역 양식 입력</p>
+            <p>(Parameter Change Log & Trouble Record</p>
         </div>
        
         <div class="tab-container">
