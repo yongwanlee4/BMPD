@@ -140,7 +140,7 @@
         <div class="header">
             <h1>ESHD L&S 파라변경이력 부동내역 양식</h1>
             <p>Parameter 변경이력 및 부동&amp;작업내역 양식 입력</p>
-            <p>(Parameter Change Log & Trouble Record)</p>
+            <p>(Parameter Change Log & Trouble Record</p>
         </div>
        
         <div class="tab-container">
@@ -320,7 +320,7 @@
                 </div>
             </div> -->
 
-           <div id="result" class="result">
+            <div id="result" class="result">
                 <p id="resultText"></p>
                 <div id="statusMessage" style="display:none; text-align:center; color:#555;">⏳ 업로드 중...</div>
                 <div>
@@ -333,7 +333,7 @@
                 <span id="alert-message"></span>
             </div>
         </div>
-        
+       
         <div class="footer">
             @
         </div>
@@ -385,7 +385,7 @@ siteEl.addEventListener('change', updateProcessOptions);
 siteE2.addEventListener('change', updateProcessOptions);
 updateProcessOptions();  // 최초 로드시에도 적용
 
-const MAIL_SUBJECT = 'ESHD L&S 공유(자동 발송)';
+const MAIL_SUBJECT = 'PRI L&S 공유(자동 발송)';
 
 const statusMessage = document.getElementById('statusMessage');
 const resultText = document.getElementById('resultText');
@@ -427,7 +427,7 @@ async function uploadContent() {
         "2-1. Machine :",
         "2-2. Unit :",
         "2-3. Assy' :",
-        "3. 변경시간(Time) :",
+        "3. 변경시간(Time):",
         "4. 변경자(Worker) :",
         "5. 변경Para(Parameter) :",
         "6. 이전값(para-before) :",
@@ -602,7 +602,7 @@ document.getElementById('para-process').addEventListener('change', function () {
 
     let options = [];
 
-    if (site === 'L-H') {
+    if (site === 'MI1' || site === 'WA5') {
         if (process === 'Electrode Supply') {
             options = ['-', 'Electrode. Unwinder'];
         }
@@ -1364,18 +1364,18 @@ document.getElementById('trouble-unit').addEventListener('change', function () {
             const reason = document.getElementById('para-reason').value;
            
             let text = `♣파라미터, IP 변경 공유\n`;
-            text += `종류(Trouble): 파라미터 변경\n`;
+            text += `종류: 파라미터 변경\n`;
             text += `0. Site : ${site}\n`;
-            text += `1. 호기(Line) : ${machine}\n`;
+            text += `1. 호기 : ${machine}\n`;
             text += `2-1. Machine : ${process}\n`;
             text += `2-2. Unit : ${unit}\n`;
             text += `2-3. Assy' : ${assy}\n`;
-            text += `3. 변경시간(Time) : ${time}\n`;
-            text += `4. 변경자(Worker) : ${worker}\n`;
-            text += `5. 변경Para(Parameter) : ${parameter}\n`;
-            text += `6. 이전값(para-before) : ${before}\n`;
-            text += `7. 변경값(para-after) : ${after}\n`;
-            text += `8. 변경사유(reason) : ${reason}`;
+            text += `3. 변경시간 : ${time}\n`;
+            text += `4. 변경자 : ${worker}\n`;
+            text += `5. 변경Para : ${parameter}\n`;
+            text += `6. 이전값 : ${before}\n`;
+            text += `7. 변경값 : ${after}\n`;
+            text += `8. 변경사유 : ${reason}`;
            
             // 결과 표시
             document.getElementById('resultText').innerText = text;
