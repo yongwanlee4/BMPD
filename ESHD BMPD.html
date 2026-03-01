@@ -321,11 +321,12 @@
             </div> -->
 
             <div id="result" class="result">
-                <p id="resultText"></p>
-                <div id="statusMessage" style="display:none; text-align:center; color:#555;">⏳ 업로드 중...</div>
-                <div>
-                    <button id="uploadButton" class="button" onclick="uploadContent()">업로드 및 공유하기</button>
-                    <!-- <button id="openButton" class="button" onclick="openContent()">부동내역 시트</button> -->
+                <p id="resultText" style="white-space: pre-wrap; background: #f0f0f0; padding: 10px; border-radius: 5px;"></p>
+                <div id="statusMessage" style="display:none; text-align:center; color:#555; margin-bottom: 10px;">⏳ 업로드 중...</div>
+    
+            <div class="button-group" style="display: flex; gap: 10px;">
+                <button id="uploadButton" class="button" onclick="handleUpload()">1. 데이터 업로드</button>
+                <button id="shareActionButton" class="button" onclick="handleShare()" style="background-color: #28a745; display: none;">2. 결과 복사 및 공유</button>               
                 </div>
             </div>
 
