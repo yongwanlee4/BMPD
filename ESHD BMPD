@@ -1,0 +1,1531 @@
+
+<!DOCTYPE html>
+<html lang="ko"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+   
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ESHD L&S 파라변경/부동내역 공유 양식</title>
+    <style>
+        body {
+            font-family: 'Malgun Gothic', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f0f0f0;
+            color: #333;
+        }
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .header {
+            background-color: #4a4a4a;
+            color: white;
+            padding: 20px;
+            text-align: center;
+            border-radius: 5px 5px 0 0;
+        }
+        .tab-container {
+            display: flex;
+            background-color: #e0e0e0;
+        }
+        .tab {
+            flex: 1;
+            text-align: center;
+            padding: 15px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+        .tab.active {
+            background-color: white;
+        }
+        .form-container {
+            background-color: white;
+            padding: 20px;
+            border-radius: 0 0 5px 5px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+        .form {
+            display: none;
+        }
+        .form.active {
+            display: block;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        input, select, textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        textarea {
+            height: 100px;
+            resize: vertical;
+        }
+        .button {
+            background-color: #4a4a4a;
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
+            width: 100%;
+            margin-top: 10px;
+        }
+        .button:hover {
+            background-color: #5a5a5a;
+        }
+        .footer {
+            text-align: right;
+            padding: 10px;
+            font-size: 12px;
+            color: #666;
+            margin-top: 20px;
+        }
+        .result {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #f9f9f9;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            display: none;
+        }
+        #copyButton {
+            margin-right: 10px;
+            background-color: #28a745;
+        }
+        #shareButton {
+            background-color: #4267B2;
+            color: white;
+        }
+        #uploadButton {
+            background-color:  #28a745;
+            color: white;
+        }
+        #openButton {
+            background-color: #962527;
+            color: white;
+        }
+        .alert-box {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            padding: 10px 20px;
+            background-color: #333;
+            color: white;
+            border-radius: 5px;
+            z-index: 1000;
+            display: none; /* 초기에는 숨김 */
+            opacity: 0;
+            transition: opacity 0.5s ease-in-out;
+        }
+        .alert-box.show {
+            display: block;
+            opacity: 1;
+        }
+    </style>
+    <!-- 카카오 SDK 제거 - Web Share API 사용 -->
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>ESHD L&S 파라변경이력 부동내역 양식</h1>
+            <p>Parameter 변경이력 및 부동&amp;작업내역 양식 입력(Parameter Change Log & Trouble Record</p>
+        </div>
+       
+        <div class="tab-container">
+          <div class="tab" onclick="switchTab(&#39;parameterForm&#39;)">Para/IP 변경공유</div>
+          <div class="tab active" onclick="switchTab(&#39;troubleForm&#39;)">부동내역(Trouble) 공유</div>
+        </div>
+       
+        <div class="form-container">
+            <!-- 파라미터 변경 폼 -->
+            <div id="parameterForm" class="form">
+            <!-- 원래거 div id="parameterForm" class="form active" -->
+
+                <div class="form-group">
+                    <label for="para-site">0. Site :</label>
+                    <select id="para-site">
+                        <option value="-">-</option>
+                        <option value="L-H">L-H</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="para-machine">1. 호기(Unit) :</label>
+                    <select id="para-machine">
+                        <option value="-">-</option>
+
+
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="para-process">2-1. Machine :</label>
+                    <select id="para-process">
+                        <!-- <option value="-">-</option>
+                        <option value="Electrode Supply">Electrode Supply</option>
+                        <option value="Lamination">Lamination</option>
+                        <option value="D-Stacking">D-Stacking</option>
+                        <option value="Taper">Taper</option>
+                        <option value="Inspection">Inspection</option> -->
+                    </select>
+                </div>
+
+
+                <div class="form-group">
+                    <label for="para-unit">2-2. Unit :</label>
+                    <select id="para-unit">
+                        <option value="-">-</option>
+
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="para-assy">2-3. Assy' :</label>
+                    <select id="para-assy">
+                        <option value="-">-</option>
+
+                    </select>
+                </div>
+
+
+                <div class="form-group">
+                    <label for="para-time">3. 변경시간(Time) :</label>
+                    <input type="datetime-local" id="para-time">
+                </div>
+                <div class="form-group">
+                    <label for="para-worker">4. 변경자(Worker) :</label>
+                    <input type="text" id="para-worker" placeholder="작업자 이름">
+                </div>
+                <div class="form-group">
+                    <label for="para-parameter">5. 변경Para(Parameter) :</label>
+                    <input type="text" id="para-parameter" placeholder="변경 파라미터 입력">
+                </div>
+                <div class="form-group">
+                    <label for="para-before">6. 이전값(para-before) :</label>
+                    <input type="text" id="para-before" placeholder="이전 값 입력">
+                </div>
+                <div class="form-group">
+                    <label for="para-after">7. 변경값(para-after) :</label>
+                    <input type="text" id="para-after" placeholder="변경 값 입력">
+                </div>
+                <div class="form-group">
+                    <label for="para-reason">8. 변경사유(reason) :</label>
+                    <textarea id="para-reason" placeholder="변경 사유 입력"></textarea>
+                </div>
+                <button class="button" onclick="generateParameterText()">양식 생성하기</button>
+            </div>
+           
+            <!-- 부동내역 폼 -->
+
+            <!-- 원래거 div id="troubleForm" class="form" -->
+            <div id="troubleForm" class="form active">
+                <div class="form-group">
+                    <label for="trouble-type">종류(Trouble) :</label>
+                    <select id="trouble-type">
+                        <option value="BM">BM</option>
+                        <option value="PD">PD</option>
+                        <option value="PM">PM</option>
+                        <option value="생산준비">생산준비(prepearation)</option>
+                    </select>                  
+                </div>
+
+                <div class="form-group">
+                    <label for="trouble-site">0. Site :</label>
+                    <select id="trouble-site">
+                        <option value="-">-</option>
+                        <option value="L-H">L-H</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="trouble-machine">1. 호기(Line) :</label>
+                    <select id="trouble-machine">
+                        <option value="-">-</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="trouble-process">2-1. Machine :</label>
+                    <select id="trouble-process">
+                        <!-- <option value="-">-</option>
+                        <option value="Electrode Supply">Electrode Supply</option>
+                        <option value="Lamination">Lamination</option>
+                        <option value="D-Stacking">D-Stacking</option>
+                        <option value="Taper">Taper</option>
+                        <option value="Inspection">Inspection</option> -->
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="trouble-unit">2-2. Unit :</label>
+                    <select id="trouble-unit">
+                        <option value="-">-</option>
+
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="trouble-assy">2-3. Assy' :</label>
+                    <select id="trouble-assy">
+                        <option value="-">-</option>
+
+                    </select>
+                </div>
+
+
+                <div class="form-group">
+                    <label for="trouble-time">3-1. 발생시간(trouble-time) :</label>
+                    <input type="datetime-local" id="trouble-time">
+                </div>
+                <div class="form-group">
+                    <label for="trouble-complete">3-2. 조치완료(trouble-complete) :</label>
+                    <input type="datetime-local" id="trouble-complete">
+                </div>
+                <div class="form-group">
+                    <label for="trouble-worker">4. 작업자(worker) :</label>
+                    <input type="text" id="trouble-worker" placeholder="작업자 이름" required>
+                </div>
+                <div class="form-group">
+                    <label for="trouble-problem">5. 현상(problem) :</label>
+                    <textarea id="trouble-problem" placeholder="현상 입력"></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="trouble-reason">6. 원인(reason) :</label>
+                    <textarea id="trouble-reason" placeholder="원인 입력"></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="trouble-action">7. 조치(action) :</label>
+                    <textarea id="trouble-action" placeholder="조치 내용 입력"></textarea>
+                </div>
+                <button class="button" onclick="generateTroubleText()">양식 생성하기</button>
+            </div>
+           
+            <!-- 결과 표시 영역 -->
+            <!-- <div id="result" class="result">
+                <p id="resultText"></p>
+                <div>
+                    <button id="uploadButton" class="button" onclick="uploadContent()">업로드 및 공유하기</button>
+                    <button id="openButton" class="button" onclick="openContent()">부동내역 시트</button>
+                </div>
+            </div> -->
+
+            <div id="result" class="result">
+                <p id="resultText"></p>
+                <div id="statusMessage" style="display:none; text-align:center; color:#555;">⏳ 업로드 중...</div>
+                <div>
+                    <button id="uploadButton" class="button" onclick="uploadContent()">업로드 및 공유하기</button>
+                    <!-- <button id="openButton" class="button" onclick="openContent()">부동내역 시트</button> -->
+                </div>
+            </div>
+
+            <div id="status-alert" class="alert-box">
+                <span id="alert-message"></span>
+            </div>
+        </div>
+       
+        <div class="footer">
+            @
+        </div>
+    </div>
+
+    <script>
+       
+// site 값에 따라 process 옵션 목록 정의
+const siteToProcess = {
+  MI1:       ['Electrode Supply', 'Lamination', 'Stacking', 'Taper', 'Inspection'],
+  WA5:       ['Electrode Supply', 'Lamination', 'Stacking', 'Taper', 'Inspection'],
+  default:   ['Electrode Supply', 'Lamination', 'D-Stacking', 'Taper', 'Inspection']
+};
+
+const siteEl = document.getElementById('trouble-site');
+const procEl = document.getElementById('trouble-process');
+const siteE2 = document.getElementById('para-site');
+const procE2 = document.getElementById('para-process');
+
+// site 변경 시 process 옵션 업데이트 함수
+function updateProcessOptions() {
+    // siteToProcess[site] 가 없으면 default 사용
+    const list = siteToProcess[siteEl.value] || siteToProcess.default;
+    const list_para = siteToProcess[siteE2.value] || siteToProcess.default;
+
+    // 기존 옵션 초기화
+    procEl.innerHTML = '';
+    procEl.appendChild(new Option('-', '-'));
+
+    procE2.innerHTML = '';
+    procE2.appendChild(new Option('-', '-'));
+
+    // 새로 정의된 옵션 삽입
+    list.forEach(p => {
+        procEl.appendChild(new Option(p, p));
+    });
+
+    list_para.forEach(p => {
+        procE2.appendChild(new Option(p, p));
+    });
+
+    // 선택 초기화
+    procEl.value = '-';
+    procE2.value = '-';
+}
+
+// 페이지 로드시와 site 변경 시에 호출
+siteEl.addEventListener('change', updateProcessOptions);
+siteE2.addEventListener('change', updateProcessOptions);
+updateProcessOptions();  // 최초 로드시에도 적용
+
+const MAIL_SUBJECT = 'PRI L&S 공유(자동 발송)';
+
+const statusMessage = document.getElementById('statusMessage');
+const resultText = document.getElementById('resultText');
+async function uploadContent() {
+    // 1. DOM 요소 가져오기
+    const uploadButton = document.getElementById('uploadButton');
+    const resultText = document.getElementById('resultText');
+    const statusAlert = document.getElementById('status-alert');
+    const alertMessage = document.getElementById('alert-message');
+
+    // 2. 업로드 시작: 버튼 비활성화, 알림창 표시 및 메시지 설정
+    uploadButton.disabled = true;
+    alertMessage.innerText = '⏳ 업로드 및 공유 진행 중...';
+    statusAlert.classList.add('show');
+
+    // 💡 핵심 수정 시작: 전체 텍스트를 가져와 멀티라인 파싱을 준비합니다.
+    const fullText = resultText.innerText.trim();
+    const isTrouble = fullText.startsWith("[부동&작업 공유]");
+
+    // 라벨 목록 (generateTroubleText / generateParameterText와 반드시 동일해야 함)
+    const troubleLabels = [
+        "종류:",
+        "0. Site :",
+        "1. 호기(Line) :",
+        "2-1. Machine :",
+        "2-2. Unit :",
+        "2-3. Assy' :",
+        "3-1. 발생시간(trouble-time) :",
+        "3-2. 조치완료(trouble-complete) :",
+        "4. 작업자(worker) :",
+        "5. 현상(problem) :",
+        "6. 원인(reason) :",
+        "7. 조치(action) :",
+    ];
+
+    const paraLabels = [
+        "0. Site :",
+        "1. 호기(Line) :",
+        "2-1. Machine :",
+        "2-2. Unit :",
+        "2-3. Assy' :",
+        "3. 변경시간(Time):",
+        "4. 변경자(Worker) :",
+        "5. 변경Para(Parameter) :",
+        "6. 이전값(para-before) :",
+        "7. 변경값(para-after) :",
+        "8. 변경사유(reason) :",
+    ];
+
+    // ⚙️ 새 getValue: 정규식 안 쓰고, 라벨 위치로만 자르기
+    const getValue = (label) => {
+        const text = fullText;                 // uploadContent 안에 이미 있는 전체 문자열
+        const labels = isTrouble ? troubleLabels : paraLabels;
+
+        // 1) 이 라벨이 어디 있는지 찾기
+        const start = text.indexOf(label);
+        if (start === -1) return "";           // 라벨 없으면 빈 문자열
+
+        const valueStart = start + label.length;
+
+        // 2) 이 라벨 뒤에 나오는 "다음 라벨"의 위치를 찾기
+        let nextIndex = text.length;
+        for (const lb of labels) {
+            if (lb === label) continue;        // 자기 자신은 건너뜀
+            const idx = text.indexOf(lb, valueStart);
+            if (idx !== -1 && idx < nextIndex) {
+                nextIndex = idx;
+            }
+        }
+
+        // 3) 현재 라벨 뒤부터, 다음 라벨 직전까지가 이 항목의 값
+        const raw = text.slice(valueStart, nextIndex);
+
+        return raw.trim();
+    };
+
+   
+    let data;
+
+    if (isTrouble) {
+        data = {
+            type: getValue("종류(Trouble):"),
+            site: getValue("0. Site :"),
+            machine: "'" + getValue("1. 호기(Line) :"),
+            process: getValue("2-1. Machine :"),
+            unit: getValue("2-2. Unit :"),
+            assy: getValue("2-3. Assy' :"),
+            time: getValue("3-1. 발생시간(trouble-time) :"),
+            complete: getValue("3-2. 조치완료(trouble-complete) :"),
+            worker: getValue("4. 작업자(worker) :"),
+            // 👇 멀티라인 필드는 isMultiLine 인수를 사용하지 않고,
+            //    정규식 내부에서 순서에 맞게 다음 라벨까지 추출하도록 설정했습니다.
+            problem: getValue("5. 현상(problem) :"),
+            reason: getValue("6. 원인(reason) :"),
+            action: getValue("7. 조치(action) :"),
+        };
+    } else { // Para/IP 변경 폼
+        data = {
+            type: 'Para/IP 변경',
+            site: getValue("0. Site :"),
+            machine: "'" + getValue("1. 호기(Line) :"), // # 추가하든, ' ' ' 추가하든
+            process: getValue("2-1. Machine :"),
+            unit: getValue("2-2. Unit :"),
+            assy: getValue("2-3. Assy' :"),
+            time: getValue("3. 변경시간(Time) :"),
+            // Para/IP 폼에서 'complete' 자리에 '8. 변경사유'가 들어감
+            complete: getValue("8. 변경사유(reason) :"),
+            worker: getValue("4. 변경자(Worker) :"),
+            problem: getValue("5. 변경Para(Parameter) :"),
+            reason: getValue("6. 이전값(para-before) :"),
+            action: getValue("7. 변경값(para-after) :"),
+            // '8. 변경사유(reason)'를 재사용하여 멀티라인으로 추출
+            para_reason: getValue("8. 변경사유(reason) :"),
+        };
+        // Para/IP 폼에서는 'complete' 필드를 '8. 변경사유(reason)'로 사용하는 구조가
+        // 데이터 전송에 문제가 있다면, 아래와 같이 'reason'과 동일하게 맞추는 것이 좋습니다.
+        data.complete = data.para_reason;
+        delete data.para_reason;
+    }
+   
+    // 이 시점에서 data 객체의 'problem', 'reason', 'action' 값은
+    // 입력된 여러 줄 내용(줄바꿈 문자 \n 포함)을 온전히 가지고 있습니다.
+    // 따라서 백엔드(Sheets/Worker)로 전송되어도 줄바꿈이 유지됩니다.
+
+    const WORKER_BASE = "https://fragrant-band-2b4e.limchickennn.workers.dev";
+   
+    const fetchPromises = [
+        fetch("https://appendtosheet-ymlfqhclja-uc.a.run.app", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(data),
+        }),
+        fetch(`${WORKER_BASE}/pa`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(data),
+        }),
+    ];
+
+    try {
+        // 4. 모든 비동기 요청을 병렬로 실행
+        await Promise.all(fetchPromises);
+       
+        // 5. 성공 시: 메시지 변경 및 공유 함수 호출 (shareContentWithRetry 함수는 그대로 있다고 가정)
+        alertMessage.innerText = '✅ 공유 시트 업로드 성공!';
+        shareContentWithRetry();
+
+    } catch (error) {
+        // 6. 실패 시: 메시지 변경 및 오류 로깅
+        console.error("업로드 오류:", error);
+        alertMessage.innerText = '❌ 업로드 중 오류 발생!';
+
+    } finally {
+        // 7. 일정 시간 후 알림창 숨기고, 버튼 활성화
+        setTimeout(() => {
+            statusAlert.classList.remove('show');
+            uploadButton.disabled = false;
+        }, 5000); // 5초 후에 알림창 숨김
+    }
+}
+
+
+document.getElementById('para-site').addEventListener('change', function () {
+    const site = this.value;
+    const machineSelect = document.getElementById('para-machine');
+    machineSelect.innerHTML = ''; // 기존 옵션 제거
+
+    let options = [];
+    if (site === 'L-H') {
+        options = ['-', '1-1', '1-2', '1-3', '2-1', '2-2', '2-3','3-1', '3-2', '3-3', '4-1', '4-2', '4-3', '5-1', '5-2', '5-3', '6-1', '6-2', '6-3', '6-4','HC1', 'HC2']
+    } else {
+        options = ['기타']; // 다른 site 선택 시 기본 옵션
+    }
+
+    options.forEach(function (opt) {
+        const option = document.createElement('option');
+        option.value = opt;
+        option.textContent = opt;
+        machineSelect.appendChild(option);
+    });
+});
+
+// TroubleForm도 동일하게
+document.querySelectorAll('#troubleForm select[id="trouble-site"]')[0]
+    ?.addEventListener('change', function () {
+    const site = this.value;
+    const machineSelect = document.getElementById('trouble-machine');
+    machineSelect.innerHTML = '';
+
+    let options = [];
+    if (site === 'L-H') {
+        options = ['-', '1-1', '1-2', '1-3', '2-1', '2-2', '2-3','3-1', '3-2', '3-3', '4-1', '4-2', '4-3', '5-1', '5-2', '5-3', '6-1', '6-2', '6-3', '6-4','HC1', 'HC2'];
+    } else {
+        options = ['기타']; // 다른 site 선택 시 기본 옵션
+    }
+
+    options.forEach(function (opt) {
+        const option = document.createElement('option');
+        option.value = opt;
+        option.textContent = opt;
+        machineSelect.appendChild(option);
+    });
+});
+
+
+// 파라유닛 선택항목 함수
+document.getElementById('para-process').addEventListener('change', function () {
+    const site = document.getElementById('para-site').value;
+    const process = this.value;
+    const unitSelect = document.getElementById('para-unit');
+
+    // 기존 옵션 제거
+    unitSelect.innerHTML = '';
+
+    let options = [];
+
+    if (site === 'MI1' || site === 'WA5') {
+        if (process === 'Electrode Supply') {
+            options = ['-', 'Electrode. Unwinder'];
+        }
+        else if (process === 'Lamination') {
+            options = [
+                '-',
+                'Separator.Unwinder',
+                'Electrode/Separator.Combiner',
+                'Laminator',
+                'Cell. Final Cutter',
+                'Cell. Inspector',
+                'Cell.Unloader',
+                'Magazine. Buffer',
+                'Cell. Tracking System'
+            ];
+        } else if (process === 'Stacking') {
+            options = [
+                '-',
+                'Cell.Conveyor',
+                'Cell.Distributor',
+                'Cell.Aligner',
+                'Stacked Cell. Transfer'
+            ];
+        } else if (process === 'Taper') {
+            options = [
+                '-',
+                'Stacked Cell. Loader',
+                'LMS',
+                'Half Cell. Stacker',
+                'Stacked Cell. Taper',
+                'Stacked Cell. Unloader'
+            ];
+        } else if (process === 'Inspection') {
+            options = [
+                '-',
+                'Taped Cell. Vision',
+                'Taped Cell. Weight Inspector',
+                'Taped Cell. Short Checker',
+                'Taped Cell. Transfer Unit',
+                'Taped Cell. Unloader'
+            ];
+        } else {
+            options = ['기타']; // 기본값 또는 공정 외 항목 처리
+        }
+    }
+
+    else {
+        if (process === 'Electrode Supply') {
+            options = ['-', 'Pancake.Loader'];
+        } else if (process === 'Lamination') {
+            options = ['-', 'Separator. Unwinder', 'Electrode/Separator.Combiner', 'Laminator', 'Cell.FinalCutter', 'Cell.TrackingSystem', 'Cell.Inspector', 'Cell.Unloader'];
+        } else if (process === 'D-Stacking') {
+            options = ['-', '[01]Cell.Loading C/V', '[02]Cell.Loading C/V', '[01]Cell.Stacker', '[02]Cell.Stacker', '[03]Cell.Stacker', 'Stacked Cell.Transfer'];
+        } else if (process === 'Taper') {
+            options = ['-', 'HalfCell.Loading', 'HalfCell.Stack', 'LMS', '[01]StackedCell.Taper', '[02]StackedCell.Taper'];
+        } else if (process === 'Inspection') {
+            options = ['-', 'TapedCell.Vision', 'TapedCell.Rotate', 'TapedCell.ShortInspector', 'Cell.TrackingSystem', 'TapedCell.Transfer', 'TapedCell.Unloader'];
+        }
+        else {
+            options = ['기타']; // 기본값 또는 공정 외 항목 처리
+        }
+    }
+
+    options.forEach(function (opt) {
+        const option = document.createElement('option');
+        option.value = opt;
+        option.textContent = opt;
+        unitSelect.appendChild(option);
+    });
+});
+
+// 트러블유닛 선택항목 함수
+document.getElementById('trouble-process').addEventListener('change', function () {
+    const site = document.getElementById('trouble-site').value;
+    const process = this.value;
+    const unitSelect = document.getElementById('trouble-unit');
+
+    // 기존 옵션 제거
+    unitSelect.innerHTML = '';
+
+    let options = [];
+
+    if (site === 'MI1'|| site === 'WA5') {
+        if (process === 'Electrode Supply') {
+            options = ['-', 'Electrode. Unwinder'];
+        }
+        else if (process === 'Lamination') {
+            options = [
+                '-',
+                'Separator.Unwinder',
+                'Electrode/Separator.Combiner',
+                'Laminator',
+                'Cell.Final Cutter',
+                'Cell.Inspector',
+                'Cell.Unloader',
+                'Magazine. Buffer',
+                'Cell. Tracking System'
+            ];
+        } else if (process === 'Stacking') {
+            options = [
+                '-',
+                'Cell.Conveyor',
+                'Cell.Distributor',
+                'Cell.Aligner',
+                'Stacked Cell.Transfer'
+            ];
+        } else if (process === 'Taper') {
+            options = [
+                '-',
+                'Stacked Cell.Loader',
+                'LMS',
+                'Half Cell.Stacker',
+                'Stacked Cell.Taper',
+                'Stacked Cell.Unloader'
+            ];
+        } else if (process === 'Inspection') {
+            options = [
+                '-',
+                'Taped Cell.Vision',
+                'Taped Cell.Weight Inspector',
+                'Taped Cell.Short Checker',
+                'Taped Cell.Transfer Unit',
+                'Taped Cell.Unloader'
+            ];
+        } else {
+            options = ['기타']; // 기본값 또는 공정 외 항목 처리
+        }
+
+    }
+    else {
+        if (process === 'Electrode Supply') {
+            options = ['-', 'Pancake.Loader'];
+        } else if (process === 'Lamination') {
+            options = ['-', 'Separator. Unwinder', 'Electrode/Separator.Combiner', 'Laminator', 'Cell.FinalCutter', 'Cell.TrackingSystem', 'Cell.Inspector', 'Cell.Unloader'];
+        } else if (process === 'D-Stacking') {
+            options = ['-', '[01]Cell.Loading C/V', '[02]Cell.Loading C/V', '[01]Cell.Stacker', '[02]Cell.Stacker', '[03]Cell.Stacker', 'Stacked Cell.Transfer'];
+        } else if (process === 'Taper') {
+            options = ['-', 'HalfCell.Loading', 'HalfCell.Stack', 'LMS', '[01]StackedCell.Taper', '[02]StackedCell.Taper'];
+        } else if (process === 'Inspection') {
+            options = ['-', 'TapedCell.Vision', 'TapedCell.Rotate', 'TapedCell.ShortInspector', 'Cell.TrackingSystem', 'TapedCell.Transfer', 'TapedCell.Unloader'];
+        }
+        else {
+            options = ['기타']; // 기본값 또는 공정 외 항목 처리
+        }
+    }
+
+    options.forEach(function (opt) {
+        const option = document.createElement('option');
+        option.value = opt;
+        option.textContent = opt;
+        unitSelect.appendChild(option);
+    });
+});
+
+// para-assy 연동 (Unit에 따라 Assy 설정)
+document.getElementById('para-unit').addEventListener('change', function () {
+    const site = document.getElementById('para-site').value;
+    const unit = this.value;
+    const assySelect = document.getElementById('para-assy');
+    assySelect.innerHTML = '';
+
+    let options = [];
+    if (site == 'MI1' || site === 'WA5') {
+        if (unit === 'Electrode.Unwinder') {
+            options = [
+            '-', '[01] Electrode. Unwinder', '[02] Electrode. Unwinder',
+            '[01] Pancake. Air Chuck', '[02] Pancake. Air Chuck',
+            '[01] Electrode. Spool EPC', '[02] Electrode. Spool EPC',
+            '[01] Electrode. Splicer', '[02] Electrode. Splicer',
+            '[01] Door', '[02] Door'
+            ];
+        }
+        else if (unit === 'Separator.Unwinder') {
+            options = [
+            '-', '[01/Upper] Separator. Unwinder', '[02/Upper] Separator. Unwinder',
+            '[01/Upper] Separator. Winder', '[02/Upper] Separator. Winder',
+            '[01/Lower] Separator. Unwinder', '[02/Lower] Separator. Unwinder',
+            '[01/Lower] Separator. Winder', '[02/Lower] Separator. Winder',
+            '[02/Upper] Pancake. Air Chuck', '[03/Upper] Pancake. Air Chuck',
+            '[02/Lower] Pancake. Air Chuck', '[03/Lower] Pancake. Air Chuck',
+            '[01/Upper] Pancake. Air Chuck', '[04/Upper] Pancake. Air Chuck',
+            '[01/Lower] Pancake. Air Chuck', '[04/Lower] Pancake. Air Chuck',
+            '[01/Upper] Separator. Splicer', '[02/Upper] Separator. Splicer',
+            '[01/Lower] Separator. Splicer', '[02/Lower] Separator. Splicer'
+            ];
+        }
+        else if (unit === 'Electrode/Separator.Combiner') {
+            options = [
+            '-', '[Upper] Electrode. Conveyor', '[Center] Electrode. Conveyor', '[Lower] Electrode. Conveyor',
+            '[01] Electrode / Separator. Combiner Conveyor', '[02] Electrode / Separator. Combiner Conveyor',
+            '[Upper] Electrode. EPC', '[Center] Electrode. EPC', '[Lower] Electrode. EPC',
+            '[Upper] Separator. EPC', '[Lower] Separator. EPC',
+            '[Upper] Electrode. Cutter', '[Center] Electrode. Cutter', '[Lower] Electrode. Cutter',
+            'Electrode. Dancer', '[Upper] Separator. Dancer', '[Lower] Separator. Dancer',
+            '[01/Upper] PET (Separator). Dancer', '[02/Upper] PET (Separator). Dancer',
+            '[01/Lower] PET (Separator). Dancer', '[02/Lower] PET (Separator). Dancer',
+            '[Upper] Electrode. Cutting Linear', '[Center] Electrode. Cutting Linear', '[Lower] Electrode. Cutting Linear'
+            ];
+        }
+        else if (unit === 'Laminator') {
+            options = [
+            '-', '[Upper] Heater', '[Lower] Heater',
+            '[Upper] Sub Heater', '[Lower] Sub Heater',
+            '[Upper] Lamination Roller', '[Lower] Lamination Roller',
+            '[Upper] PET. Cleaner', '[Lower] PET. Cleaner',
+            '[01/Upper] PET. Dancer', '[01/Lower] PET. Dancer',
+            '[02/Upper] PET. Dancer', '[02/Lower] PET. Dancer',
+            '[Upper] PET. Unwinder', '[Lower] PET. Unwinder',
+            '[Upper] PET. Winder', '[Lower] PET. Winder',
+            'Uncut Cell. Dancer', '[Upper] PET. Splicer', '[Lower] PET. Splicer',
+            'Separator. Sealer', 'Separator. Sealing Linear'
+            ];
+        }
+        else if (unit === 'Final Cell Cutter') {
+            options = [
+            '-', 'Uncut Cell. Conveyor', 'Cell. Conveyor',
+            'Cell. Cutter', 'Electrode. Cutting Linear'
+            ];
+        }
+        else if (unit === 'Cell.Inspector') {
+            options = [
+            '-', 'Cell. Conveyor', 'Cell. Gripper',
+            '[01] Cell. Vision Inspector', 'Cell. Short Inspector',
+            '[02] Cell. Vision Inspector', 'Cell. Linear'
+            ];
+        }
+        else if (unit === 'Cell.Unloader') {
+            options = [
+            '-', '[01] Cell. Pusher', '[02] Cell. Pusher',
+            '[01] NG Cell. Ejector', '[02] NG Cell. Ejector', '[03] NG Cell. Ejector',
+            'Cell. Suction Conveyor', '[01] Cell. Buffer Lift', '[02] Cell. Buffer Lift'
+            ];
+        }
+        else if (unit === 'Magazine Buffer') {
+            options = [
+            '-', '[01] Magazine. Lift', '[02] Magazine. Lift',
+            '[01A] Magazine. Conveyor', '[01B] Magazine. Conveyor',
+            '[02A] Magazine. Conveyor', '[02B] Magazine. Conveyor'
+            ];
+        }
+        else if (unit === 'Cell.Conveyor') {
+            options = ['-', 'Cell. Suction Conveyor'];
+        }
+        else if (unit === 'Cell.Distributor') {
+            options = [
+            '-', 'Cell. Pick & Place (Delta)',
+            '[A] Cell. Suction Conveyor', '[B] Cell. Suction Conveyor'
+            ];
+        }
+        else if (unit === 'Cell.Aligner') {
+            options = [
+            '-', '[A] Cell. Gripper', '[B] Cell. Gripper', '[A] Cell. Vision',
+            '[C] Cell. Gripper', '[D] Cell. Gripper', '[B] Cell. Vision'
+            ];
+        }
+        else if (unit === 'Cell.Stacking Table') {
+            options = [
+            '-', '[A] Cell. Vision', '[B] Cell. Vision',
+            '[1A] Stacking Table', '[2A] Stacking Table', '[1B] Stacking Table', '[2B] Stacking Table',
+            '[1A] Finger Clamp', '[1B] Finger Clamp', '[1C] Finger Clamp', '[1D] Finger Clamp',
+            '[2A] Finger Clamp', '[2B] Finger Clamp', '[2C] Finger Clamp', '[2D] Finger Clamp',
+            '[1A] Cell. Lift', '[2A] Cell. Lift', '[1B] Cell. Lift', '[2B] Cell. Lift'
+            ];
+        }
+        else if (unit === 'Stacked Cell.Transfer') {
+            options = [
+            '-', '[A] Stacked Cell. Transfer', '[B] Stacked Cell. Transfer',
+            '[A] Stacked Cell. Gripper', '[B] Stacked Cell. Gripper'
+            ];
+        }
+        else if (unit === 'Stacked Cell.Loader') {
+            options = [
+            '-', '[A] Air. Supply', '[B] Air. Supply',
+            '[A] Stacked Cell. Rotating Table', '[B] Stacked Cell. Rotating Table',
+            '[A] Stacked Cell. Transfer', '[B] Stacked Cell. Transfer'
+            ];
+        }
+        else if (unit === 'LMS') {
+            options = ['-', 'Stacked Cell. Shuttle', 'Stacked Cell. Clamp'];
+        }
+        else if (unit === 'Half Cell.Stacker') {
+            options = [
+            '-', 'Air. Supply', '[Upper] Half Cell. Vision', '[Lower] Half Cell. Vision',
+            'SCARA Robot', 'Half Cell. Pick&Place',
+            '[01] Half Cell. Lift', '[02] Half Cell. Lift',
+            '[01] Half Cell. Rotating Table', '[02] Half Cell. Rotating Table', 'Half Cell. Table'
+            ];
+        }
+        else if (unit === 'Stacked Cell.Taper') {
+            options = [
+            '-', '[01] Stacked Cell. Press', '[02] Stacked Cell. Press',
+            '[A] Tape. Attacher', '[B] Tape. Attacher',
+            '[1A] Tape. Feeder', '[2A] Tape. Feeder', '[3A] Tape. Feeder',
+            '[1B] Tape. Feeder', '[2B] Tape. Feeder', '[3B] Tape. Feeder',
+            '[1A] Tape. Clamp', '[2A] Tape. Clamp', '[3A] Tape. Clamp',
+            '[1B] Tape. Clamp', '[2B] Tape. Clamp', '[3B] Tape. Clamp'
+            ];
+        }
+        else if (unit === 'Stacked Cell.Unloader') {
+            options = ['-', 'Air. Supply', 'Taped Cell. Lift'];
+        }
+        else if (unit === 'Taped Cell.Vision') {
+            options = [
+            '-', 'Taped Cell. Pick&Place', '[Upper] Taped Cell. Vision',
+            '[Lower] Taped Cell. Vision', 'Taped Cell. Transfer'
+            ];
+        }
+        else if (unit === 'Taped Cell.Weight Inspector') {
+            options = ['-', 'Taped Cell. Pick&Place', '[Upper] Taped Cell. Weight Inspector'];
+        }
+        else if (unit === 'Taped Cell.Short hecker') {
+            options = [
+            '-', 'Taped Cell. Dual Transfer', 'Taped Cell. Short Checker',
+            '[01] Taped Cell. Table', '[02] Taped Cell. Table'
+            ];
+        }
+        else if (unit === 'Taped Cell.Transfer Unit') {
+            options = [
+            '-', 'Taped Cell. Pick&Place', 'NG Box (vision)', 'NG Box (weight)', 'NG Box (short)',
+            'NG Box Lift (vision)', 'NG Box Lift (weight)', 'NG Box Lift (short)', 'OK Cell. Conveyor'
+            ];
+        }
+        else if (unit === 'Taped Cell.Unloader') {
+            options = ['-', 'Taped Cell. Pick&Place', 'Taped Cell. Conveyor', 'Tray. Conveyor', 'Tray (Empty). Conveyor'];
+        }
+        else {
+            options = ['-'];
+        }
+    }
+
+    else {
+        if (unit === 'Pancake.Loader') {
+            options = ['-', '[01/A] Pancake. Conveyor', '[01/B] Pancake. Conveyor', '[01/C] Pancake. Conveyor', '[02/A] Pancake. Conveyor', '[02B] Pancake. Conveyor', '[02/C] Pancake. Conveyor', 'Pancake. Hoist', '[01/A] Pancake. Unwinder', '[02/A] Pancake. Unwinder', '[03/A] Pancake. Unwinder', '[04/A] Pancake. Unwinder', '[01/B] Pancake. Unwinder', '[02/B] Pancake. Unwinder', '[03/B] Pancake. Unwinder', '[04/B] Pancake. Unwinder', '[01/A] Electrode. Vacuum Plate', '[02/A] Electrode. Vacuum Plate', '[03/A] Electrode. Vacuum Plate', '[04/A] Electrode. Vacuum Plate', '[01/B] Electrode. Vacuum Plate', '[02/B] Electrode. Vacuum Plate', '[03/B] Electrode. Vacuum Plate', '[04/B] Electrode. Vacuum Plate', '[01/A] Electrode. Auto Splicer Cutter', '[02/A] Electrode. Auto Splicer Cutter', '[03/A] Electrode. Auto Splicer Cutter', '[04/A] Electrode. Auto Splicer Cutter', '[01/B] Electrode. Auto Splicer Cutter', '[02/B] Electrode. Auto Splicer Cutter', '[03/B] Electrode. Auto Splicer Cutter', '[04/B] Electrode. Auto Splicer Cutter', 'Electrode. Tape Feeder', 'Electrode. Scrape Box', '[01/A] Electrode. Idle Roller', '[02/A] Electrode. Idle Roller', '[01/B] Electrode. Idle Roller', '[02/B] Electrode. Idle Roller', '[01/A] Dancer. Roller', '[02/A] Dancer. Roller', '[01/B] Dancer. Roller', '[02/B] Dancer. Roller', '[01/A] Adjust Roller', '[02/A] Adjust Roller', '[01/B] Adjust Roller', '[02/B] Adjust Roller', '[01/A] Electrode. EPC', '[02/A] Electrode. EPC', '[03/A] Electrode. EPC', '[04/A] Electrode. EPC', '[01/B] Electrode. EPC', '[02/B] Electrode. EPC', '[03/B] Electrode. EPC', '[04/B] Electrode. EPC', '[01/A] Winder Diameter Sensor', '[02/A] Winder Diameter Sensor', '[03/A] Winder Diameter Sensor', '[04/A] Winder Diameter Sensor', '[01/B] Winder Diameter Sensor', '[02/B] Winder Diameter Sensor', '[03/B] Winder Diameter Sensor', '[04/B] Winder Diameter Sensor', '[01/A] PET tape sensor', '[02/A] PET tape sensor', '[03/A] PET tape sensor', '[04/A] PET tape sensor', '[01/B] PET tape sensor', '[02/B] PET tape sensor', '[03/B] PET tape sensor', '[04/B] PET tape sensor', '[01] Tab Direction Vision', '[02] Tab Direction Vision', 'ATR'];
+        } else if (unit === 'Separator. Unwinder') {
+            options = ['-', '[01/Upper] Separator. Unwinder', '[02/Upper] Separator. Unwinder', '[01/Upper] Separator. PET. Winder', '[02/Upper] Separator. PET. Winder', '[01/Lower] Separator. Unwinder', '[02/Lower] Separator. Unwinder', '[01/Lower] Separator. PET. Winder', '[02/Lower] Separator. PET. Winder', '[01/Upper] Separator. PET. Ionizer', '[02/Upper] Separator. PET. Ionizer', '[01/Lower] Separator. PET. Ionizer', '[02/Lower] Separator. PET. Ionizer', '[01/Upper] Separator. Auto Splicer Vacuum Plate', '[02/Upper] Separator. Auto Splicer Vacuum Plate', '[03/Upper] Separator. Auto Splicer Vacuum Plate', '[04/Upper] Separator. Auto Splicer Vacuum Plate', '[Upper] Separator. Auto Splicer Tape feeder', '[Upper] Separator. Auto Splicer Tape clamp', '[Upper] Separator. Auto Splicer Cutter', '[Upper] Separator. Auto Splicer Residual Sepa collector', '[Upper] Separator. Auto Splicer Residual Sepa collector', '[01/Lower] Separator. Auto Splicer vacuum plate', '[02/Lower] Separator. Auto Splicer vacuum plate', '[03/Lower] Separator. Auto Splicer  vacuum plate', '[04/Lower] Separator. Auto Splicer  vacuum plate', '[Lower] Separator. Auto Splicer Tape feeder', '[Lower] Separator. Auto Splicer Tape clamp', '[Lower] Separator. Auto Splicer Separator cutter', '[Lower ] Separator. Auto Splicer Residual Sepa collector', '[Lower] Separator. Auto Splicer Residual Sepa collector', '[01/Upper] Electrode. Manual Splicer', '[01/Center] Electrode. Manual Splicer', '[01/Upper] Separator. Winder Diameter Sensor', '[02/Upper] Separator. Winder Diameter Sensor', '[01/Lower] Separator. Winder Diameter Sensor', '[02/Lower] Separator. Winder Diameter Sensor', '[01/Upper] Separator. End Tape Sensor', '[02/Upper] Separator. End Tape Sensor', '[01/Lower] Separator. End Tape Sensor', '[02/Lower] Separator. End Tape Sensor', '[Upper] Separator. Manual Splicer', '[Lower] Separator. Manual Splicer'];
+        } else if (unit === 'Electrode/Separator.Combiner') {
+            options = ['-', '[Upper] Electrode. Feeding Roller', '[Center] Electrode. Feeding Roller', '[01] Electrode / Separator. Nip Roller', '[01] Electrode / Separator. Temporary Heating Roller', '[02] Electrode / Separator. Nip Roller', '[02] Electrode / Separator. Temporary Heating Roller', '[Upper] Electrode. EPC', '[Center] Electrode. EPC', '[Upper] Separator. EPC', '[Lower] Separator. EPC', '[Upper] Electrode. Cutter', '[Center] Electrode. Cutter', '[Upper] Electrode Cutting Linear', '[Center] Electrode Cutting Linear', '[Upper] Separator. Dancer', '[Lower] Separator. Dancer', '[Lower] Separator. Corona(not applied)', '[Upper] Electrode. Idle Roller', '[Center] Electrode. Idle Roller', '[Upper] Separator. Idle Roller', '[Lower] Separator. Idle Roller', '[Upper] PET (Separator). Idle Roller', '[Lower] PET (Separator). Idle Roller', 'Magnet', '[02/Upper] Electrode. Manual Splicer', '[02/Center] Electrode. Manual Splicer', '[Upper] Electrode Connection PET Winder', '[Center] Electrode. V Groove Vision', '[Upper] Electrode. Connection Tape Sensor', '[Center] Electrode. Connection Tape Sensor', '[Upper] Separator. Connection Tape Sensor', '[Lower] Separator. Connection Tape Sensor', '[Upper] Electrode. Stopper', '[Center] Electrode. Stopper', '[Upper] Separator. KANSEN Expander Roller', '[Lower] Separator. KANSEN Expander Roller'];
+        } else if (unit === 'Laminator') {
+            options = ['-', '[01/Upper] Heating Zone', '[01/Lower] Heating Zone', '[Upper] Sub Heater', '[Lower] Sub Heater', '[Upper] Lamination Roller', '[Lower] Lamination Roller', '[a] PET. Cleaner', '[b] PET. Cleaner', '[c] PET. Cleaner', '[d] PET. Cleaner', '[01/Upper] PET. Dancer', '[02/Upper] PET. Dancer', '[01/Lower] PET. Dancer', '[02/Lower] PET. Dancer', '[Upper] PET. Unwinder', '[Lower] PET. Unwinder', '[Upper] PET. Winder', '[Lower] PET. Winder', 'Uncut Cell. Dancer', '[Upper] PET. Splicer(Manual)', '[Lower] PET. Splicer(Manual)', 'Separator. Sealer', 'Separator. Sealing Linear', 'Uncut Cell. Air Blow/Suction', 'Uncut Cell. Union Vision (#합치)', '[01/Upper] PET. Ionizer', '[02/Upper] PET. Ionizer', '[01/Lower] PET. Ionizer', '[02/Lower] PET. Ionizer', '[Upper] PET. Idle Roller', '[Lower] PET. Idle Roller', 'Magnet', '[Upper] Separator. Longside Sealer', '[Lower] Separator. Longside Sealer', 'Separator. Longside Sealer. Vision', '[Upper] Sub Roller', '[Lower] Sub Roller', 'Particle Prevention Unit'];
+        } else if (unit === 'Cell.FinalCutter') {
+            options = ['-', 'Uncut Cell. Conveyor', 'Cell. Grip Nip Roller', 'Cell. Cutter', 'Electrode. Cutting Linear'];
+        } else if (unit === 'Cell.TrackingSystem') {
+            options = ['-', 'Cell. BCR'];
+        } else if (unit === 'Cell.Inspector') {
+            options = ['-', 'Cell. Suction Conveyor', 'Cell. Short Inspector', 'Cell. Vision Inspector', 'Cell. NG Mark Vision', 'Cell. Short Inspector Linear', 'Cell. Vision Inspector Linear', 'Cell. Blow & Suction', 'Cell. Thickness Sensor'];
+        } else if (unit === 'Cell.Unloader') {
+            options = ['-', '[01] NG Cell. Pusher', '[02] NG Cell. Pusher', '[03] NG Cell. Pusher', '[01] NG Cell. Box', '[02] NG Cell. Box', '[03] NG Cell. Box', 'Cell. Suction Conveyor', 'OK Cell. Pusher'];
+        } else if (unit === '[01]Cell.Loading C/V') {
+            options = ['-', '[Lower] Cell. Loading C/V'];
+        } else if (unit === '[02]Cell.Loading C/V') {
+            options = ['-', '[Upper] Cell. Loading C/V', '[01] Cell. NG Box', '[02] Cell. NG Box', 'Cell. Lower Separator Vision'];
+        } else if (unit === '[01]Cell.Stacker') {
+            options = ['-', 'Cell. Pusher', '[01/A] Cell. Gripper', '[02/A] Cell. Gripper', '[03/A] Cell. Gripper', '[01/B] Cell. Gripper', '[02/B] Cell. Gripper', '[03/B] Cell. Gripper', 'Cell. Align Vision', 'Cell. Align Table', 'Table Transfer Linear', 'Cell. Stack Vision'];
+        } else if (unit === '[02]Cell.Stacker') {
+            options = ['-', 'Cell. Pusher', '[01/A] Cell. Gripper', '[02/A] Cell. Gripper', '[03/A] Cell. Gripper', '[01/B] Cell. Gripper', '[02/B] Cell. Gripper', '[03/B] Cell. Gripper', 'Cell. Align Vision', 'Cell. Align Table', 'Table Transfer Linear', 'Cell. Stack Vision'];
+        } else if (unit === '[03]Cell.Stacker') {
+            options = ['-', 'Cell. Pusher', '[01/A] Cell. Gripper', '[02/A] Cell. Gripper', '[03/A] Cell. Gripper', '[01/B] Cell. Gripper', '[02/B] Cell. Gripper', '[03/B] Cell. Gripper', 'Cell. Align Vision', 'Cell. Align Table', 'Table Transfer Linear', 'Cell. Stack Vision'];
+        } else if (unit === 'Stacked Cell.Transfer') {
+            options = ['-', 'Stacked Cell. Transfer', 'Stacked Cell. Gripper'];
+        } else if (unit === 'HalfCell.Loading') {
+            options = ['-', '[A] Half Cell. Magazine', '[B] Half Cell. Magazine', '[C] Half Cell. Magazine', 'Half Cell. Vibrator', 'Half Cell. Pick & Place', 'Half Cell. Thickness Inspector', 'Half Cell. Rotate', '[A] Half Cell. NG Box', '[B] Half Cell. NG Box'];
+        } else if (unit === 'HalfCell.Stack') {
+            options = ['-', 'Half Cell. Buffer Table', 'Half Cell. Vision NG Box', 'Half Cell. Scara Robot', 'Half Cell. Vision'];
+        } else if (unit === 'LMS') {
+            options = ['-', 'Stacked Cell. Shuttle', '[01] LMS. Stacked Cell Clamp Air Supply', '[02] LMS. Stacked Cell Clamp Air Supply', '[03] LMS. Stacked Cell Clamp Air Supply', '[04] LMS. Stacked Cell Clamp Air Supply', '[05] LMS. Stacked Cell Clamp Air Supply', 'Shuttle. In Lift', 'Shuttle. Out Lift', 'Shuttle. Blow & Suction Cleaner', 'Shuttle. Buffer01', 'Shuttle. Buffer02', 'Stacked Cell. NG Pick & Place', 'Stacked Cell. NG Box', 'Stacked Cell. Rotate', 'Stacked Cell. BCR'];
+        } else if (unit === '[01]StackedCell.Taper') {
+            options = ['-', 'Stacked Cell. Press', '[01] Tape. Attacher', '[02] Tape. Attacher', '[03] Tape. Attacher', '[04] Tape. Attacher', '[05] Tape. Attacher', '[06] Tape. Attacher', '[01] Tape. Upper Clamp', '[02] Tape. Upper Clamp', '[03] Tape. Upper Clamp', '[04] Tape. Upper Clamp', '[05] Tape. Upper Clamp', '[06] Tape. Upper Clamp', '[01] Tape. Lower Clamp', '[02] Tape. Lower Clamp', '[03] Tape. Lower Clamp', '[04] Tape. Lower Clamp', '[05] Tape. Lower Clamp', '[06] Tape. Lower Clamp', '[01] Tape. Tape Supply', '[02] Tape. Tape Supply', '[03] Tape. Tape Supply', '[04] Tape. Tape Supply', '[05] Tape. Tape Supply', '[06] Tape. Tape Supply', '[01] Tape. Cutter', '[02] Tape. Cutter', '[03] Tape. Cutter', '[04] Tape. Cutter', '[05] Tape. Cutter', '[06] Tape. Cutter', 'NG Tape. Receiver'];
+        } else if (unit === '[02]StackedCell.Taper') {
+            options = ['-', 'Stacked Cell. Press', '[01] Tape. Attacher', '[02] Tape. Attacher', '[03] Tape. Attacher', '[04] Tape. Attacher', '[05] Tape. Attacher', '[06] Tape. Attacher', '[01] Tape. Upper Clamp', '[02] Tape. Upper Clamp', '[03] Tape. Upper Clamp', '[04] Tape. Upper Clamp', '[05] Tape. Upper Clamp', '[06] Tape. Upper Clamp', '[01] Tape. Lower Clamp', '[02] Tape. Lower Clamp', '[03] Tape. Lower Clamp', '[04] Tape. Lower Clamp', '[05] Tape. Lower Clamp', '[06] Tape. Lower Clamp', '[01] Tape. Tape Supply', '[02] Tape. Tape Supply', '[03] Tape. Tape Supply', '[04] Tape. Tape Supply', '[05] Tape. Tape Supply', '[06] Tape. Tape Supply', '[01] Tape. Cutter', '[02] Tape. Cutter', '[03] Tape. Cutter', '[04] Tape. Cutter', '[05] Tape. Cutter', '[06] Tape. Cutter', 'NG Tape. Receiver'];
+        } else if (unit === 'TapedCell.Vision') {
+            options = ['-', '[01] Taped Cell. Pick & Place', '[Upper/Lower] Taped Cell. Vision', '[4-side] Taped Cell. Vision', 'Taped Cell. Rotating Table', '[02] Taped Cell. Pick & Place', 'Taped Cell. Weight Inspector'];
+        } else if (unit === 'TapedCell.Rotate') {
+            options = ['-', 'TapedCell.Rotate'];
+        } else if (unit === 'TapedCell.ShortInspector') {
+            options = ['-', 'Taped Cell. Shuttle', 'Taped Cell. Short, Thickness Inspector'];
+        } else if (unit === 'Cell.TrackingSystem') {
+            options = ['-', '[01] Cell. BCR', '[02] Cell. BCR'];
+        } else if (unit === 'TapedCell.Transfer') {
+            options = ['-', 'NG Taped Cell. Transfer', '[01] NG Box', '[02] NG Box', '[03] NG Box', '[04] NG Box', 'NG Box Transfer', 'OK Taped Cell. Transfer', 'Taped Cell. Conveyor', 'Taped Cell. Align'];
+        } else if (unit === 'TapedCell.Unloader') {
+            options = ['-', 'Taped Cell. Pick & Place', '[01] Taped Cell. Lift', '[02] Taped Cell. Lift', '[01] Tray(Empty). Conveyor', '[02] Tray(Empty). Conveyor', 'Tray(Empty). Conveyor', 'Tray. Conveyor', '[A] Tray. Lift', '[B] Tray. Lift', 'Tray. Cleaner', 'Tray. Conveyor Free Roller', 'Tray(Empty). Conveyor Free Roller'];
+        } else {
+            options = ['-'];
+        }
+    }
+
+    options.forEach(function (opt) {
+        const option = document.createElement('option');
+        option.value = opt;
+        option.textContent = opt;
+        assySelect.appendChild(option);
+    });
+});
+
+// trouble-assy 연동 (Unit에 따라 Assy 설정)
+document.getElementById('trouble-unit').addEventListener('change', function () {
+    const site = document.getElementById('trouble-site').value;
+    const unit = this.value;
+    const assySelect = document.getElementById('trouble-assy');
+    assySelect.innerHTML = '';
+
+    let options = [];
+
+    if (site == 'MI1' || site == 'WA5') {
+        if (unit === 'Electrode.Unwinder') {
+            options = [
+            '-', '[01] Electrode. Unwinder', '[02] Electrode. Unwinder',
+            '[01] Pancake. Air Chuck', '[02] Pancake. Air Chuck',
+            '[01] Electrode. Spool EPC', '[02] Electrode. Spool EPC',
+            '[01] Electrode. Splicer', '[02] Electrode. Splicer',
+            '[01] Door', '[02] Door'
+            ];
+        }
+        else if (unit === 'Separator.Unwinder') {
+            options = [
+            '-', '[01/Upper] Separator. Unwinder', '[02/Upper] Separator. Unwinder',
+            '[01/Upper] Separator. Winder', '[02/Upper] Separator. Winder',
+            '[01/Lower] Separator. Unwinder', '[02/Lower] Separator. Unwinder',
+            '[01/Lower] Separator. Winder', '[02/Lower] Separator. Winder',
+            '[02/Upper] Pancake. Air Chuck', '[03/Upper] Pancake. Air Chuck',
+            '[02/Lower] Pancake. Air Chuck', '[03/Lower] Pancake. Air Chuck',
+            '[01/Upper] Pancake. Air Chuck', '[04/Upper] Pancake. Air Chuck',
+            '[01/Lower] Pancake. Air Chuck', '[04/Lower] Pancake. Air Chuck',
+            '[01/Upper] Separator. Splicer', '[02/Upper] Separator. Splicer',
+            '[01/Lower] Separator. Splicer', '[02/Lower] Separator. Splicer'
+            ];
+        }
+        else if (unit === 'Electrode/Separator.Combiner') {
+            options = [
+            '-', '[Upper] Electrode. Conveyor', '[Center] Electrode. Conveyor', '[Lower] Electrode. Conveyor',
+            '[01] Electrode / Separator. Combiner Conveyor', '[02] Electrode / Separator. Combiner Conveyor',
+            '[Upper] Electrode. EPC', '[Center] Electrode. EPC', '[Lower] Electrode. EPC',
+            '[Upper] Separator. EPC', '[Lower] Separator. EPC',
+            '[Upper] Electrode. Cutter', '[Center] Electrode. Cutter', '[Lower] Electrode. Cutter',
+            'Electrode. Dancer', '[Upper] Separator. Dancer', '[Lower] Separator. Dancer',
+            '[01/Upper] PET (Separator). Dancer', '[02/Upper] PET (Separator). Dancer',
+            '[01/Lower] PET (Separator). Dancer', '[02/Lower] PET (Separator). Dancer',
+            '[Upper] Electrode. Cutting Linear', '[Center] Electrode. Cutting Linear', '[Lower] Electrode. Cutting Linear'
+            ];
+        }
+        else if (unit === 'Laminator') {
+            options = [
+            '-', '[Upper] Heater', '[Lower] Heater',
+            '[Upper] Sub Heater', '[Lower] Sub Heater',
+            '[Upper] Lamination Roller', '[Lower] Lamination Roller',
+            '[Upper] PET. Cleaner', '[Lower] PET. Cleaner',
+            '[01/Upper] PET. Dancer', '[01/Lower] PET. Dancer',
+            '[02/Upper] PET. Dancer', '[02/Lower] PET. Dancer',
+            '[Upper] PET. Unwinder', '[Lower] PET. Unwinder',
+            '[Upper] PET. Winder', '[Lower] PET. Winder',
+            'Uncut Cell. Dancer', '[Upper] PET. Splicer', '[Lower] PET. Splicer',
+            'Separator. Sealer', 'Separator. Sealing Linear'
+            ];
+        }
+        else if (unit === 'Final Cell Cutter') {
+            options = [
+            '-', 'Uncut Cell. Conveyor', 'Cell. Conveyor',
+            'Cell. Cutter', 'Electrode. Cutting Linear'
+            ];
+        }
+        else if (unit === 'Cell.Inspector') {
+            options = [
+            '-', 'Cell. Conveyor', 'Cell. Gripper',
+            '[01] Cell. Vision Inspector', 'Cell. Short Inspector',
+            '[02] Cell. Vision Inspector', 'Cell. Linear'
+            ];
+        }
+        else if (unit === 'Cell.Unloader') {
+            options = [
+            '-', '[01] Cell. Pusher', '[02] Cell. Pusher',
+            '[01] NG Cell. Ejector', '[02] NG Cell. Ejector', '[03] NG Cell. Ejector',
+            'Cell. Suction Conveyor', '[01] Cell. Buffer Lift', '[02] Cell. Buffer Lift'
+            ];
+        }
+        else if (unit === 'Magazine Buffer') {
+            options = [
+            '-', '[01] Magazine. Lift', '[02] Magazine. Lift',
+            '[01A] Magazine. Conveyor', '[01B] Magazine. Conveyor',
+            '[02A] Magazine. Conveyor', '[02B] Magazine. Conveyor'
+            ];
+        }
+        else if (unit === 'Cell.Conveyor') {
+            options = ['-', 'Cell. Suction Conveyor'];
+        }
+        else if (unit === 'Cell.Distributor') {
+            options = [
+            '-', 'Cell. Pick & Place (Delta)',
+            '[A] Cell. Suction Conveyor', '[B] Cell. Suction Conveyor'
+            ];
+        }
+        else if (unit === 'Cell.Aligner') {
+            options = [
+            '-', '[A] Cell. Gripper', '[B] Cell. Gripper', '[A] Cell. Vision',
+            '[C] Cell. Gripper', '[D] Cell. Gripper', '[B] Cell. Vision'
+            ];
+        }
+        else if (unit === 'Cell.Stacking Table') {
+            options = [
+            '-', '[A] Cell. Vision', '[B] Cell. Vision',
+            '[1A] Stacking Table', '[2A] Stacking Table', '[1B] Stacking Table', '[2B] Stacking Table',
+            '[1A] Finger Clamp', '[1B] Finger Clamp', '[1C] Finger Clamp', '[1D] Finger Clamp',
+            '[2A] Finger Clamp', '[2B] Finger Clamp', '[2C] Finger Clamp', '[2D] Finger Clamp',
+            '[1A] Cell. Lift', '[2A] Cell. Lift', '[1B] Cell. Lift', '[2B] Cell. Lift'
+            ];
+        }
+        else if (unit === 'Stacked Cell.Transfer') {
+            options = [
+            '-', '[A] Stacked Cell. Transfer', '[B] Stacked Cell. Transfer',
+            '[A] Stacked Cell. Gripper', '[B] Stacked Cell. Gripper'
+            ];
+        }
+        else if (unit === 'Stacked Cell.Loader') {
+            options = [
+            '-', '[A] Air. Supply', '[B] Air. Supply',
+            '[A] Stacked Cell. Rotating Table', '[B] Stacked Cell. Rotating Table',
+            '[A] Stacked Cell. Transfer', '[B] Stacked Cell. Transfer'
+            ];
+        }
+        else if (unit === 'LMS') {
+            options = ['-', 'Stacked Cell. Shuttle', 'Stacked Cell. Clamp'];
+        }
+        else if (unit === 'Half Cell.Stacker') {
+            options = [
+            '-', 'Air. Supply', '[Upper] Half Cell. Vision', '[Lower] Half Cell. Vision',
+            'SCARA Robot', 'Half Cell. Pick&Place',
+            '[01] Half Cell. Lift', '[02] Half Cell. Lift',
+            '[01] Half Cell. Rotating Table', '[02] Half Cell. Rotating Table', 'Half Cell. Table'
+            ];
+        }
+        else if (unit === 'Stacked Cell.Taper') {
+            options = [
+            '-', '[01] Stacked Cell. Press', '[02] Stacked Cell. Press',
+            '[A] Tape. Attacher', '[B] Tape. Attacher',
+            '[1A] Tape. Feeder', '[2A] Tape. Feeder', '[3A] Tape. Feeder',
+            '[1B] Tape. Feeder', '[2B] Tape. Feeder', '[3B] Tape. Feeder',
+            '[1A] Tape. Clamp', '[2A] Tape. Clamp', '[3A] Tape. Clamp',
+            '[1B] Tape. Clamp', '[2B] Tape. Clamp', '[3B] Tape. Clamp'
+            ];
+        }
+        else if (unit === 'Stacked Cell.Unloader') {
+            options = ['-', 'Air. Supply', 'Taped Cell. Lift'];
+        }
+        else if (unit === 'Taped Cell.Vision') {
+            options = [
+            '-', 'Taped Cell. Pick&Place', '[Upper] Taped Cell. Vision',
+            '[Lower] Taped Cell. Vision', 'Taped Cell. Transfer'
+            ];
+        }
+        else if (unit === 'Taped Cell.Weight Inspector') {
+            options = ['-', 'Taped Cell. Pick&Place', '[Upper] Taped Cell. Weight Inspector'];
+        }
+        else if (unit === 'Taped Cell.Short hecker') {
+            options = [
+            '-', 'Taped Cell. Dual Transfer', 'Taped Cell. Short Checker',
+            '[01] Taped Cell. Table', '[02] Taped Cell. Table'
+            ];
+        }
+        else if (unit === 'Taped Cell.Transfer Unit') {
+            options = [
+            '-', 'Taped Cell. Pick&Place', 'NG Box (vision)', 'NG Box (weight)', 'NG Box (short)',
+            'NG Box Lift (vision)', 'NG Box Lift (weight)', 'NG Box Lift (short)', 'OK Cell. Conveyor'
+            ];
+        }
+        else if (unit === 'Taped Cell.Unloader') {
+            options = ['-', 'Taped Cell. Pick&Place', 'Taped Cell. Conveyor', 'Tray. Conveyor', 'Tray (Empty). Conveyor'];
+        }
+        else {
+            options = ['-'];
+        }
+    }
+    else {
+        if (unit === 'Pancake.Loader') {
+            options = ['-', '[01/A] Pancake. Conveyor', '[01/B] Pancake. Conveyor', '[01/C] Pancake. Conveyor', '[02/A] Pancake. Conveyor', '[02B] Pancake. Conveyor', '[02/C] Pancake. Conveyor', 'Pancake. Hoist', '[01/A] Pancake. Unwinder', '[02/A] Pancake. Unwinder', '[03/A] Pancake. Unwinder', '[04/A] Pancake. Unwinder', '[01/B] Pancake. Unwinder', '[02/B] Pancake. Unwinder', '[03/B] Pancake. Unwinder', '[04/B] Pancake. Unwinder', '[01/A] Electrode. Vacuum Plate', '[02/A] Electrode. Vacuum Plate', '[03/A] Electrode. Vacuum Plate', '[04/A] Electrode. Vacuum Plate', '[01/B] Electrode. Vacuum Plate', '[02/B] Electrode. Vacuum Plate', '[03/B] Electrode. Vacuum Plate', '[04/B] Electrode. Vacuum Plate', '[01/A] Electrode. Auto Splicer Cutter', '[02/A] Electrode. Auto Splicer Cutter', '[03/A] Electrode. Auto Splicer Cutter', '[04/A] Electrode. Auto Splicer Cutter', '[01/B] Electrode. Auto Splicer Cutter', '[02/B] Electrode. Auto Splicer Cutter', '[03/B] Electrode. Auto Splicer Cutter', '[04/B] Electrode. Auto Splicer Cutter', 'Electrode. Tape Feeder', 'Electrode. Scrape Box', '[01/A] Electrode. Idle Roller', '[02/A] Electrode. Idle Roller', '[01/B] Electrode. Idle Roller', '[02/B] Electrode. Idle Roller', '[01/A] Dancer. Roller', '[02/A] Dancer. Roller', '[01/B] Dancer. Roller', '[02/B] Dancer. Roller', '[01/A] Adjust Roller', '[02/A] Adjust Roller', '[01/B] Adjust Roller', '[02/B] Adjust Roller', '[01/A] Electrode. EPC', '[02/A] Electrode. EPC', '[03/A] Electrode. EPC', '[04/A] Electrode. EPC', '[01/B] Electrode. EPC', '[02/B] Electrode. EPC', '[03/B] Electrode. EPC', '[04/B] Electrode. EPC', '[01/A] Winder Diameter Sensor', '[02/A] Winder Diameter Sensor', '[03/A] Winder Diameter Sensor', '[04/A] Winder Diameter Sensor', '[01/B] Winder Diameter Sensor', '[02/B] Winder Diameter Sensor', '[03/B] Winder Diameter Sensor', '[04/B] Winder Diameter Sensor', '[01/A] PET tape sensor', '[02/A] PET tape sensor', '[03/A] PET tape sensor', '[04/A] PET tape sensor', '[01/B] PET tape sensor', '[02/B] PET tape sensor', '[03/B] PET tape sensor', '[04/B] PET tape sensor', '[01] Tab Direction Vision', '[02] Tab Direction Vision', 'ATR'];
+        } else if (unit === 'Separator. Unwinder') {
+            options = ['-', '[01/Upper] Separator. Unwinder', '[02/Upper] Separator. Unwinder', '[01/Upper] Separator. PET. Winder', '[02/Upper] Separator. PET. Winder', '[01/Lower] Separator. Unwinder', '[02/Lower] Separator. Unwinder', '[01/Lower] Separator. PET. Winder', '[02/Lower] Separator. PET. Winder', '[01/Upper] Separator. PET. Ionizer', '[02/Upper] Separator. PET. Ionizer', '[01/Lower] Separator. PET. Ionizer', '[02/Lower] Separator. PET. Ionizer', '[01/Upper] Separator. Auto Splicer Vacuum Plate', '[02/Upper] Separator. Auto Splicer Vacuum Plate', '[03/Upper] Separator. Auto Splicer Vacuum Plate', '[04/Upper] Separator. Auto Splicer Vacuum Plate', '[Upper] Separator. Auto Splicer Tape feeder', '[Upper] Separator. Auto Splicer Tape clamp', '[Upper] Separator. Auto Splicer Cutter', '[Upper] Separator. Auto Splicer Residual Sepa collector', '[Upper] Separator. Auto Splicer Residual Sepa collector', '[01/Lower] Separator. Auto Splicer vacuum plate', '[02/Lower] Separator. Auto Splicer vacuum plate', '[03/Lower] Separator. Auto Splicer  vacuum plate', '[04/Lower] Separator. Auto Splicer  vacuum plate', '[Lower] Separator. Auto Splicer Tape feeder', '[Lower] Separator. Auto Splicer Tape clamp', '[Lower] Separator. Auto Splicer Separator cutter', '[Lower ] Separator. Auto Splicer Residual Sepa collector', '[Lower] Separator. Auto Splicer Residual Sepa collector', '[01/Upper] Electrode. Manual Splicer', '[01/Center] Electrode. Manual Splicer', '[01/Upper] Separator. Winder Diameter Sensor', '[02/Upper] Separator. Winder Diameter Sensor', '[01/Lower] Separator. Winder Diameter Sensor', '[02/Lower] Separator. Winder Diameter Sensor', '[01/Upper] Separator. End Tape Sensor', '[02/Upper] Separator. End Tape Sensor', '[01/Lower] Separator. End Tape Sensor', '[02/Lower] Separator. End Tape Sensor', '[Upper] Separator. Manual Splicer', '[Lower] Separator. Manual Splicer'];
+        } else if (unit === 'Electrode/Separator.Combiner') {
+            options = ['-', '[Upper] Electrode. Feeding Roller', '[Center] Electrode. Feeding Roller', '[01] Electrode / Separator. Nip Roller', '[01] Electrode / Separator. Temporary Heating Roller', '[02] Electrode / Separator. Nip Roller', '[02] Electrode / Separator. Temporary Heating Roller', '[Upper] Electrode. EPC', '[Center] Electrode. EPC', '[Upper] Separator. EPC', '[Lower] Separator. EPC', '[Upper] Electrode. Cutter', '[Center] Electrode. Cutter', '[Upper] Electrode Cutting Linear', '[Center] Electrode Cutting Linear', '[Upper] Separator. Dancer', '[Lower] Separator. Dancer', '[Lower] Separator. Corona(not applied)', '[Upper] Electrode. Idle Roller', '[Center] Electrode. Idle Roller', '[Upper] Separator. Idle Roller', '[Lower] Separator. Idle Roller', '[Upper] PET (Separator). Idle Roller', '[Lower] PET (Separator). Idle Roller', 'Magnet', '[02/Upper] Electrode. Manual Splicer', '[02/Center] Electrode. Manual Splicer', '[Upper] Electrode Connection PET Winder', '[Center] Electrode. V Groove Vision', '[Upper] Electrode. Connection Tape Sensor', '[Center] Electrode. Connection Tape Sensor', '[Upper] Separator. Connection Tape Sensor', '[Lower] Separator. Connection Tape Sensor', '[Upper] Electrode. Stopper', '[Center] Electrode. Stopper', '[Upper] Separator. KANSEN Expander Roller', '[Lower] Separator. KANSEN Expander Roller'];
+        } else if (unit === 'Laminator') {
+            options = ['-', '[01/Upper] Heating Zone', '[01/Lower] Heating Zone', '[Upper] Sub Heater', '[Lower] Sub Heater', '[Upper] Lamination Roller', '[Lower] Lamination Roller', '[a] PET. Cleaner', '[b] PET. Cleaner', '[c] PET. Cleaner', '[d] PET. Cleaner', '[01/Upper] PET. Dancer', '[02/Upper] PET. Dancer', '[01/Lower] PET. Dancer', '[02/Lower] PET. Dancer', '[Upper] PET. Unwinder', '[Lower] PET. Unwinder', '[Upper] PET. Winder', '[Lower] PET. Winder', 'Uncut Cell. Dancer', '[Upper] PET. Splicer(Manual)', '[Lower] PET. Splicer(Manual)', 'Separator. Sealer', 'Separator. Sealing Linear', 'Uncut Cell. Air Blow/Suction', 'Uncut Cell. Union Vision (#합치)', '[01/Upper] PET. Ionizer', '[02/Upper] PET. Ionizer', '[01/Lower] PET. Ionizer', '[02/Lower] PET. Ionizer', '[Upper] PET. Idle Roller', '[Lower] PET. Idle Roller', 'Magnet', '[Upper] Separator. Longside Sealer', '[Lower] Separator. Longside Sealer', 'Separator. Longside Sealer. Vision', '[Upper] Sub Roller', '[Lower] Sub Roller', 'Particle Prevention Unit'];
+        } else if (unit === 'Cell.FinalCutter') {
+            options = ['-', 'Uncut Cell. Conveyor', 'Cell. Grip Nip Roller', 'Cell. Cutter', 'Electrode. Cutting Linear'];
+        } else if (unit === 'Cell.TrackingSystem') {
+            options = ['-', 'Cell. BCR'];
+        } else if (unit === 'Cell.Inspector') {
+            options = ['-', 'Cell. Suction Conveyor', 'Cell. Short Inspector', 'Cell. Vision Inspector', 'Cell. NG Mark Vision', 'Cell. Short Inspector Linear', 'Cell. Vision Inspector Linear', 'Cell. Blow & Suction', 'Cell. Thickness Sensor'];
+        } else if (unit === 'Cell.Unloader') {
+            options = ['-', '[01] NG Cell. Pusher', '[02] NG Cell. Pusher', '[03] NG Cell. Pusher', '[01] NG Cell. Box', '[02] NG Cell. Box', '[03] NG Cell. Box', 'Cell. Suction Conveyor', 'OK Cell. Pusher'];
+        } else if (unit === '[01]Cell.Loading C/V') {
+            options = ['-', '[Lower] Cell. Loading C/V'];
+        } else if (unit === '[02]Cell.Loading C/V') {
+            options = ['-', '[Upper] Cell. Loading C/V', '[01] Cell. NG Box', '[02] Cell. NG Box', 'Cell. Lower Separator Vision'];
+        } else if (unit === '[01]Cell.Stacker') {
+            options = ['-', 'Cell. Pusher', '[01/A] Cell. Gripper', '[02/A] Cell. Gripper', '[03/A] Cell. Gripper', '[01/B] Cell. Gripper', '[02/B] Cell. Gripper', '[03/B] Cell. Gripper', 'Cell. Align Vision', 'Cell. Align Table', 'Table Transfer Linear', 'Cell. Stack Vision'];
+        } else if (unit === '[02]Cell.Stacker') {
+            options = ['-', 'Cell. Pusher', '[01/A] Cell. Gripper', '[02/A] Cell. Gripper', '[03/A] Cell. Gripper', '[01/B] Cell. Gripper', '[02/B] Cell. Gripper', '[03/B] Cell. Gripper', 'Cell. Align Vision', 'Cell. Align Table', 'Table Transfer Linear', 'Cell. Stack Vision'];
+        } else if (unit === '[03]Cell.Stacker') {
+            options = ['-', 'Cell. Pusher', '[01/A] Cell. Gripper', '[02/A] Cell. Gripper', '[03/A] Cell. Gripper', '[01/B] Cell. Gripper', '[02/B] Cell. Gripper', '[03/B] Cell. Gripper', 'Cell. Align Vision', 'Cell. Align Table', 'Table Transfer Linear', 'Cell. Stack Vision'];
+        } else if (unit === 'Stacked Cell.Transfer') {
+            options = ['-', 'Stacked Cell. Transfer', 'Stacked Cell. Gripper'];
+        } else if (unit === 'HalfCell.Loading') {
+            options = ['-', '[A] Half Cell. Magazine', '[B] Half Cell. Magazine', '[C] Half Cell. Magazine', 'Half Cell. Vibrator', 'Half Cell. Pick & Place', 'Half Cell. Thickness Inspector', 'Half Cell. Rotate', '[A] Half Cell. NG Box', '[B] Half Cell. NG Box'];
+        } else if (unit === 'HalfCell.Stack') {
+            options = ['-', 'Half Cell. Buffer Table', 'Half Cell. Vision NG Box', 'Half Cell. Scara Robot', 'Half Cell. Vision'];
+        } else if (unit === 'LMS') {
+            options = ['-', 'Stacked Cell. Shuttle', '[01] LMS. Stacked Cell Clamp Air Supply', '[02] LMS. Stacked Cell Clamp Air Supply', '[03] LMS. Stacked Cell Clamp Air Supply', '[04] LMS. Stacked Cell Clamp Air Supply', '[05] LMS. Stacked Cell Clamp Air Supply', 'Shuttle. In Lift', 'Shuttle. Out Lift', 'Shuttle. Blow & Suction Cleaner', 'Shuttle. Buffer01', 'Shuttle. Buffer02', 'Stacked Cell. NG Pick & Place', 'Stacked Cell. NG Box', 'Stacked Cell. Rotate', 'Stacked Cell. BCR'];
+        } else if (unit === '[01]StackedCell.Taper') {
+            options = ['-', 'Stacked Cell. Press', '[01] Tape. Attacher', '[02] Tape. Attacher', '[03] Tape. Attacher', '[04] Tape. Attacher', '[05] Tape. Attacher', '[06] Tape. Attacher', '[01] Tape. Upper Clamp', '[02] Tape. Upper Clamp', '[03] Tape. Upper Clamp', '[04] Tape. Upper Clamp', '[05] Tape. Upper Clamp', '[06] Tape. Upper Clamp', '[01] Tape. Lower Clamp', '[02] Tape. Lower Clamp', '[03] Tape. Lower Clamp', '[04] Tape. Lower Clamp', '[05] Tape. Lower Clamp', '[06] Tape. Lower Clamp', '[01] Tape. Tape Supply', '[02] Tape. Tape Supply', '[03] Tape. Tape Supply', '[04] Tape. Tape Supply', '[05] Tape. Tape Supply', '[06] Tape. Tape Supply', '[01] Tape. Cutter', '[02] Tape. Cutter', '[03] Tape. Cutter', '[04] Tape. Cutter', '[05] Tape. Cutter', '[06] Tape. Cutter', 'NG Tape. Receiver'];
+        } else if (unit === '[02]StackedCell.Taper') {
+            options = ['-', 'Stacked Cell. Press', '[01] Tape. Attacher', '[02] Tape. Attacher', '[03] Tape. Attacher', '[04] Tape. Attacher', '[05] Tape. Attacher', '[06] Tape. Attacher', '[01] Tape. Upper Clamp', '[02] Tape. Upper Clamp', '[03] Tape. Upper Clamp', '[04] Tape. Upper Clamp', '[05] Tape. Upper Clamp', '[06] Tape. Upper Clamp', '[01] Tape. Lower Clamp', '[02] Tape. Lower Clamp', '[03] Tape. Lower Clamp', '[04] Tape. Lower Clamp', '[05] Tape. Lower Clamp', '[06] Tape. Lower Clamp', '[01] Tape. Tape Supply', '[02] Tape. Tape Supply', '[03] Tape. Tape Supply', '[04] Tape. Tape Supply', '[05] Tape. Tape Supply', '[06] Tape. Tape Supply', '[01] Tape. Cutter', '[02] Tape. Cutter', '[03] Tape. Cutter', '[04] Tape. Cutter', '[05] Tape. Cutter', '[06] Tape. Cutter', 'NG Tape. Receiver'];
+        } else if (unit === 'TapedCell.Vision') {
+            options = ['-', '[01] Taped Cell. Pick & Place', '[Upper/Lower] Taped Cell. Vision', '[4-side] Taped Cell. Vision', 'Taped Cell. Rotating Table', '[02] Taped Cell. Pick & Place', 'Taped Cell. Weight Inspector'];
+        } else if (unit === 'TapedCell.Rotate') {
+            options = ['-', 'TapedCell.Rotate'];
+        } else if (unit === 'TapedCell.ShortInspector') {
+            options = ['-', 'Taped Cell. Shuttle', 'Taped Cell. Short, Thickness Inspector'];
+        } else if (unit === 'Cell.TrackingSystem') {
+            options = ['-', '[01] Cell. BCR', '[02] Cell. BCR'];
+        } else if (unit === 'TapedCell.Transfer') {
+            options = ['-', 'NG Taped Cell. Transfer', '[01] NG Box', '[02] NG Box', '[03] NG Box', '[04] NG Box', 'NG Box Transfer', 'OK Taped Cell. Transfer', 'Taped Cell. Conveyor', 'Taped Cell. Align'];
+        } else if (unit === 'TapedCell.Unloader') {
+            options = ['-', 'Taped Cell. Pick & Place', '[01] Taped Cell. Lift', '[02] Taped Cell. Lift', '[01] Tray(Empty). Conveyor', '[02] Tray(Empty). Conveyor', 'Tray(Empty). Conveyor', 'Tray. Conveyor', '[A] Tray. Lift', '[B] Tray. Lift', 'Tray. Cleaner', 'Tray. Conveyor Free Roller', 'Tray(Empty). Conveyor Free Roller'];
+        } else {
+            options = ['-'];
+        }
+    }
+
+    options.forEach(function (opt) {
+        const option = document.createElement('option');
+        option.value = opt;
+        option.textContent = opt;
+        assySelect.appendChild(option);
+    });
+});
+
+        // 페이지 로드 시 현재 시간 설정
+        window.onload = function() {
+            setCurrentDateTime('para-time');
+            setCurrentDateTime('trouble-time');
+            setCurrentDateTime('trouble-complete');
+        };
+
+        // 1) 요소 참조
+        const startEl    = document.getElementById('trouble-time');
+        const completeEl = document.getElementById('trouble-complete');
+
+        // 2) 현재 시각 기준 +1일(24h) 계산 함수
+        function getMaxIso() {
+            const now     = new Date();
+            const plusOne = new Date(now.getTime() + 24*60*60*1000);
+            // datetime-local 에 맞춘 형식: YYYY-MM-DDThh:mm
+            return plusOne.toISOString().slice(0,16);
+        }
+
+        // 3) max 속성 갱신 및 값 보정 함수
+        function updateMaxConstraints() {
+            const maxIso = getMaxIso();
+
+            // 입력 필드의 max 속성 설정
+            startEl.max    = maxIso;
+            completeEl.max = maxIso;
+
+            // 이미 선택된 값이 max를 넘었으면 보정
+            if (startEl.value && startEl.value > maxIso) {
+                startEl.value = maxIso;
+                alert('⚠️ 발생시간은 현재 시각부터 24시간 이내여야 합니다.');
+            }
+            if (completeEl.value && completeEl.value > maxIso) {
+                completeEl.value = maxIso;
+                alert('⚠️ 조치완료 시간은 현재 시각부터 24시간 이내여야 합니다.');
+            }
+        }
+
+        // 4) 페이지 로드 시, 발생시간 변경 시마다 max 갱신
+        window.addEventListener('load', () => {
+            updateMaxConstraints();
+            // 이미 설정해둔 min 제약도 한 번 동기화
+            completeEl.min = startEl.value;
+            });
+        startEl.addEventListener('change', () => {
+            // min, max 둘 다 갱신
+            completeEl.min = startEl.value;
+            updateMaxConstraints();
+            });
+        completeEl.addEventListener('change', () => {
+            updateMaxConstraints();
+            // min 검사: 발생시간 이전이면 보정
+            if (completeEl.value < startEl.value) {
+                completeEl.value = startEl.value;
+                alert('⚠️ 조치완료 시간은 발생시간 이후여야 합니다.');
+            }
+        });
+
+       
+        // 현재 시간 설정 함수
+        function setCurrentDateTime(elementId) {
+            const now = new Date();
+            const year = now.getFullYear();
+            const month = String(now.getMonth() + 1).padStart(2, '0');
+            const day = String(now.getDate()).padStart(2, '0');
+            const hours = String(now.getHours()).padStart(2, '0');
+            const minutes = String(now.getMinutes()).padStart(2, '0');
+           
+            const dateTimeValue = `${year}-${month}-${day}T${hours}:${minutes}`;
+            document.getElementById(elementId).value = dateTimeValue;
+        }
+       
+        // 탭 전환 함수
+        function switchTab(formId) {
+            // 모든 탭과 폼 비활성화
+            document.querySelectorAll('.tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            document.querySelectorAll('.form').forEach(form => {
+                form.classList.remove('active');
+            });
+           
+            // 선택된 탭과 폼 활성화
+            if (formId === 'parameterForm') {
+                document.querySelectorAll('.tab')[0].classList.add('active');
+                document.getElementById('parameterForm').classList.add('active');
+            } else {
+                document.querySelectorAll('.tab')[1].classList.add('active');
+                document.getElementById('troubleForm').classList.add('active');
+            }
+           
+            // 결과 숨기기
+            document.getElementById('result').style.display = 'none';
+        }
+       
+        // 날짜 형식화 함수
+        function formatDateTime(dateTimeStr) {
+            if (!dateTimeStr) return '';
+           
+            const date = new Date(dateTimeStr);
+            const year = date.getFullYear();
+            const month = date.getMonth() + 1;
+            const day = date.getDate();
+            const hours = date.getHours();
+            const minutes = String(date.getMinutes()).padStart(2, '0');
+           
+            const ampm = hours >= 12 ? '오후' : '오전';
+            const hour12 = hours % 12 || 12;
+           
+            return `${year}년 ${month}월 ${day}일 ${ampm} ${hour12}:${minutes}`;
+        }
+       
+        // 파라미터 변경 양식 생성 함수
+        function generateParameterText() {
+            const site = document.getElementById('para-site').value;
+            const machine = document.getElementById('para-machine').value;
+            const process = document.getElementById('para-process').value;
+            const unit = document.getElementById('para-unit').value;
+            const assy = document.getElementById('para-assy').value;
+            const time = formatDateTime(document.getElementById('para-time').value);
+            const parameter = document.getElementById('para-parameter').value;
+            const before = document.getElementById('para-before').value;
+            const after = document.getElementById('para-after').value;
+            const worker = document.getElementById('para-worker').value;
+            const reason = document.getElementById('para-reason').value;
+           
+            let text = `♣파라미터, IP 변경 공유\n`;
+            text += `종류: 파라미터 변경\n`;
+            text += `0. Site : ${site}\n`;
+            text += `1. 호기 : ${machine}\n`;
+            text += `2-1. Machine : ${process}\n`;
+            text += `2-2. Unit : ${unit}\n`;
+            text += `2-3. Assy' : ${assy}\n`;
+            text += `3. 변경시간 : ${time}\n`;
+            text += `4. 변경자 : ${worker}\n`;
+            text += `5. 변경Para : ${parameter}\n`;
+            text += `6. 이전값 : ${before}\n`;
+            text += `7. 변경값 : ${after}\n`;
+            text += `8. 변경사유 : ${reason}`;
+           
+            // 결과 표시
+            document.getElementById('resultText').innerText = text;
+            document.getElementById('result').style.display = 'block';
+        }
+       
+        // 부동내역 양식 생성 함수
+        function generateTroubleText() {
+            const type = document.getElementById('trouble-type').value;
+            const site = document.getElementById('trouble-site').value;
+            const machine = document.getElementById('trouble-machine').value;
+            const process = document.getElementById('trouble-process').value;
+            const unit = document.getElementById('trouble-unit').value;
+            const assy = document.getElementById('trouble-assy').value;
+            const time = formatDateTime(document.getElementById('trouble-time').value);
+            const complete = formatDateTime(document.getElementById('trouble-complete').value);
+            const worker = document.getElementById('trouble-worker').value;
+            const problem = document.getElementById('trouble-problem').value;
+            const reason = document.getElementById('trouble-reason').value;
+            const action = document.getElementById('trouble-action').value;
+           
+            let text = `[부동&작업 공유]\n`;
+            text += `종류: ${type}\n`;
+            text += `0. Site : ${site}\n`;
+            text += `1. 호기 : ${machine}\n`;
+            text += `2-1. Machine : ${process}\n`;
+            text += `2-2. Unit : ${unit}\n`;
+            text += `2-3. Assy' : ${assy}\n`;
+            text += `3-1. 발생시간 : ${time}\n`;
+            text += `3-2. 조치완료 : ${complete}\n`;
+            text += `4. 작업자 : ${worker}\n`;
+            text += `5. 현상 : ${problem}\n`;
+            text += `6. 원인 : ${reason}\n`;
+            text += `7. 조치 : ${action}`;
+           
+            // 결과 표시
+            document.getElementById('resultText').innerText = text;
+            document.getElementById('result').style.display = 'block';
+        }
+       
+        // 텍스트 복사 함수
+        function copyText() {
+            const text = document.getElementById('resultText').innerText;
+            navigator.clipboard.writeText(text)
+                .then(() => {
+                    alert('텍스트가 클립보드에 복사되었습니다.');
+                })
+                .catch(err => {
+                    console.error('클립보드 복사 실패:', err);
+                    alert('클립보드 복사에 실패했습니다. 수동으로 텍스트를 선택하여 복사하세요.');
+                });
+        }
+
+        function copyTextSafe(text) {
+            // 1) 최신 API 시도
+            if (navigator.clipboard && window.isSecureContext) {
+                return navigator.clipboard.writeText(text).then(() => {
+                    alert("✅ 텍스트가 클립보드에 복사되었습니다.");
+                }).catch(err => {
+                    console.warn("clipboard.writeText 실패:", err);
+                    fallbackCopy(text);
+                });
+            } else {
+                // 2) 보안환경 아님 → 폴백
+                fallbackCopy(text);
+            }
+        }
+
+        function fallbackCopy(text) {
+            const textarea = document.createElement("textarea");
+            textarea.value = text;
+            textarea.style.position = "fixed";  // 화면에 안 보이게
+            textarea.style.opacity = "0";
+            document.body.appendChild(textarea);
+            textarea.focus();
+            textarea.select();
+
+            try {
+                document.execCommand("copy");
+                alert("✅ 텍스트가 클립보드에 복사되었습니다. (폴백)");
+            } catch (err) {
+                console.error("execCommand copy 실패:", err);
+                alert("⚠️ 복사가 지원되지 않는 환경입니다. 직접 선택해서 복사해주세요.");
+            } finally {
+                document.body.removeChild(textarea);
+            }
+        }
+       
+        // 공유하기 함수
+        function shareContent() {
+            const text = document.getElementById('resultText').innerText;
+            const title = 'ESMI2 JF2 공유 내용';
+           
+            // Web Share API 지원 확인
+            if (navigator.share) {
+                navigator.share({
+                    title: title,
+                    text: text
+                })
+                .then(() => {
+                    console.log('공유 성공');
+                })
+                .catch((error) => {
+                    console.log('공유 실패:', error);
+                    // 공유 실패 시 클립보드에 복사
+                    fallbackToCopy(text);
+                });
+            } else {
+                // Web Share API를 지원하지 않는 경우 클립보드에 복사
+                fallbackToCopy(text);
+            }
+        }
+
+        async function shareContentWithRetry(maxRetries = 2) {
+            const text = document.getElementById("resultText").innerText;
+            const title = "PRI L&S 공유 내용";
+
+            for (let attempt = 1; attempt <= maxRetries; attempt++) {
+                try {
+                    if (navigator.share) {
+                        await navigator.share({ title: title, text: text });
+                        console.log(`✅ 공유 성공 (시도 ${attempt})`);
+                        return; // 성공 시 함수 종료
+                    } else {
+                        throw new Error("Web Share API 미지원");
+                    }
+                } catch (err) {
+                    console.warn(`⚠️ 공유 실패 (시도 ${attempt}):`, err);
+
+                    if (attempt === maxRetries) {
+                        // 마지막 실패 → 클립보드 복사 폴백
+                        copyTextSafe(text);
+                        alert("⚠️ 공유가 반복 실패하여 클립보드에 복사했습니다.");
+                    }
+                }
+            }
+        }
+       
+        // 클립보드 복사 대체 방법
+        function fallbackToCopy(text) {
+            navigator.clipboard.writeText(text)
+                .then(() => {
+                    alert('텍스트가 클립보드에 복사되었습니다.');
+                })
+                .catch(err => {
+                    console.error('클립보드 복사 실패:', err);
+                    alert('클립보드 복사에 실패했습니다. 수동으로 텍스트를 선택하여 복사하세요.');
+                });
+        }
+
+    </script>
+
+
+</body></html>
