@@ -997,14 +997,21 @@ document.getElementById('para-unit').addEventListener('change', function () {
     });
 });
  
-// trouble-assy 연동 (Unit에 따라 Assy 설정)
+  // trouble-assy 연동 (Unit에 따라 Assy 설정)
 document.getElementById('trouble-unit').addEventListener('change', function () {
-    const site = document.getElementById('trouble-site').value;
     const unit = this.value;
     const assySelect = document.getElementById('trouble-assy');
     assySelect.innerHTML = '';
- 
-    let options = [];
+
+    let options = ['-'];
+
+    options.forEach(function (opt) {
+        const option = document.createElement('option');
+        option.value = opt;
+        option.textContent = opt;
+        assySelect.appendChild(option);
+    });
+});
  
     if (site == 'MI1' || site == 'WA5') {
         if (unit === 'Electrode.Unwinder') {
