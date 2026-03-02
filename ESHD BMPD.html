@@ -162,7 +162,7 @@
                 </div>
  
                 <div class="form-group">
-                    <label for="para-machine">1. 호기(Unit) :</label>
+                    <label for="para-machine">1. 호기(Line) :</label>
                     <select id="para-machine">
                         <option value="-">-</option>
  
@@ -913,7 +913,7 @@ document.getElementById('para-unit').addEventListener('change', function () {
         else if (unit === 'Taped Cell.Weight Inspector') {
             options = ['-', 'Taped Cell. Pick&Place', '[Upper] Taped Cell. Weight Inspector'];
         }
-        else if (unit === 'Taped Cell.Short hecker') {
+        else if (unit === 'Taped Cell.Short Checker') {
             options = [
             '-', 'Taped Cell. Dual Transfer', 'Taped Cell. Short Checker',
             '[01] Taped Cell. Table', '[02] Taped Cell. Table'
@@ -1004,7 +1004,15 @@ document.getElementById('trouble-unit').addEventListener('change', function () {
     const assySelect = document.getElementById('trouble-assy');
     assySelect.innerHTML = '';
  
-    let options = [];
+    let options = ['-'];
+
+    options.forEach(function (opt) {
+        const option = document.createElement('option');
+        option.value = opt;
+        option.textContent = opt;
+        assySelect.appendChild(option);
+    });
+})
  
     if (site == 'MI1' || site == 'WA5') {
         if (unit === 'Electrode.Unwinder') {
