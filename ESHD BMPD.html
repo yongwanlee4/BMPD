@@ -1004,16 +1004,8 @@ document.getElementById('trouble-unit').addEventListener('change', function () {
     const assySelect = document.getElementById('trouble-assy');
     assySelect.innerHTML = '';
  
-    let options = ['-'];
+    let options = [];
 
-    options.forEach(function (opt) {
-        const option = document.createElement('option');
-        option.value = opt;
-        option.textContent = opt;
-        assySelect.appendChild(option);
-    });
-})
- 
     if (site == 'MI1' || site == 'WA5') {
         if (unit === 'Electrode.Unwinder') {
             options = [
