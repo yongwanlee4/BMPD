@@ -525,44 +525,91 @@ async function uploadContent() {
     // 입력된 여러 줄 내용(줄바꿈 문자 \n 포함)을 온전히 가지고 있습니다.
     // 따라서 백엔드(Sheets/Worker)로 전송되어도 줄바꿈이 유지됩니다.
 
-    const WORKER_BASE = "https://fragrant-band-2b4e.limchickennn.workers.dev";
-    
-    const fetchPromises = [
-        fetch("https://appendtosheet-ymlfqhclja-uc.a.run.app", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(data),
-        }),
-        fetch(`${WORKER_BASE}/pa`, {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(data),
-        }),
-    ];
+const WORKER_BASE = "https://fragrant-band-2b4e.limchickennn.workers.dev";
+const GOOGLE_SCRIPT_URL =
+  "https://script.google.com/macros/s/AKfycbxXFTsQxsRoQd-vEyIVEariLjmcTRwJL1AekZfabnBtPTOtt4ny6FpyTlaLxoMclG2h/exec";
 
+// --- 유틸: sleep ---
+const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+
+// --- 유틸: Worker 업로드 재시도 (최대 3회) ---
+async function postWorkerWithRetry(url, payload, maxRetries = 3) {
+  let lastError = null;
+
+  for (let attempt = 1; attempt <= maxRetries; attempt++) {
     try {
-        // 4. 모든 비동기 요청을 병렬로 실행
-        await Promise.all(fetchPromises);
-        
-        // 5. 성공 시: 메시지 변경 및 공유 함수 호출 (shareContentWithRetry 함수는 그대로 있다고 가정)
-        alertMessage.innerText = '✅ 공유 시트 업로드 성공!';
-        shareContentWithRetry();
+      const res = await fetch(url, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      });
 
-    } catch (error) {
-        // 6. 실패 시: 메시지 변경 및 오류 로깅
-        console.error("업로드 오류:", error);
-        alertMessage.innerText = '❌ 업로드 중 오류 발생!';
+      if (res.ok) {
+        return { ok: true, attempt, status: res.status };
+      }
 
-    } finally {
-        // 7. 일정 시간 후 알림창 숨기고, 버튼 활성화
-        setTimeout(() => {
-            statusAlert.classList.remove('show');
-            uploadButton.disabled = false;
-        }, 5000); // 5초 후에 알림창 숨김
+      // 4xx/5xx도 실패로 처리 (본문은 디버깅용)
+      const text = await res.text().catch(() => "");
+      lastError = new Error(`Worker HTTP ${res.status}: ${text}`);
+    } catch (e) {
+      lastError = e;
     }
+
+    // 재시도 딜레이: 400ms, 800ms, 1600ms
+    if (attempt < maxRetries) {
+      await sleep(400 * Math.pow(2, attempt - 1));
+    }
+  }
+
+  return { ok: false, attempt: maxRetries, error: lastError };
 }
 
+try {
+  // 1) Google Sheet 업로드 (필수)
+  const scriptRes = await fetch(GOOGLE_SCRIPT_URL, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(data),
+  });
 
+  const scriptJson = await scriptRes.json().catch(() => ({}));
+  if (!scriptRes.ok || scriptJson.result !== "success") {
+    throw new Error(
+      `Google Script failed: status=${scriptRes.status}, body=${JSON.stringify(scriptJson)}`
+    );
+  }
+
+  // 2) Worker 업로드 (선택) + 재시도
+  const workerUrl = `${WORKER_BASE}/pa`;
+  const workerResult = await postWorkerWithRetry(workerUrl, data, 3);
+
+  // 3) 사용자 메시지(명확하게 2줄)
+  const sheetName = scriptJson.sheet || "Sheet";
+  const line1 = `✅ 시트 저장 성공 (${sheetName})`;
+
+  let line2 = "";
+  if (workerResult.ok) {
+    line2 = `✅ 공유 서버(Worker) 전송 성공 (시도 ${workerResult.attempt}회)`;
+  } else {
+    console.warn("Worker 업로드 최종 실패:", workerResult.error);
+    line2 = `⚠️ 공유 서버(Worker) 전송 실패 (3회 재시도 후 실패)`;
+  }
+
+  alertMessage.innerText = `${line1}\n${line2}`;
+
+  // 4) 시트 성공이면 공유는 항상 시도
+  shareContentWithRetry();
+
+} catch (error) {
+  console.error("업로드 오류:", error);
+  alertMessage.innerText = "❌ 업로드 중 오류 발생!\n(시트 저장 실패)";
+} finally {
+  setTimeout(() => {
+    statusAlert.classList.remove("show");
+    uploadButton.disabled = false;
+  }, 5000);
+}
+       
 document.getElementById('para-site').addEventListener('change', function () {
     const site = this.value;
     const machineSelect = document.getElementById('para-machine');
