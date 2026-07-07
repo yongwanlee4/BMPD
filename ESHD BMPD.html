@@ -46,6 +46,40 @@
     .form { display: none; }
     .form.active { display: block; }
     .form-group { margin-bottom: 15px; }
+
+    .checkbox-group {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+      padding: 10px;
+      border: 1px solid #ddd;
+      border-radius: 6px;
+      background-color: #fafafa;
+    }
+    .checkbox-group label {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      margin: 0;
+      font-weight: normal;
+      padding: 8px;
+      border: 1px solid #e2e2e2;
+      border-radius: 6px;
+      background-color: white;
+      cursor: pointer;
+    }
+    .checkbox-group input[type="checkbox"] {
+      width: 18px;
+      height: 18px;
+      margin: 0;
+      flex: 0 0 auto;
+    }
+    .small-button {
+      width: auto;
+      padding: 8px 12px;
+      margin: 0 6px 8px 0;
+      border-radius: 6px;
+    }
     label {
       display: block;
       margin-bottom: 6px;
@@ -130,13 +164,14 @@
 <body>
   <div class="container">
     <div class="header">
-      <h1>ESHD L&S 파라변경이력 / 부동내역 양식</h1>
-      <p>Parameter 변경이력 및 부동&작업내역 입력 (L-H 전용)</p>
+      <h1>ESHD L&S 파라변경 / 부동 / 제어변경 양식</h1>
+      <p>Parameter, 부동&작업내역, 제어변경 입력 (L-H 전용)</p>
     </div>
 
     <div class="tab-container">
       <div class="tab" onclick="switchTab('parameterForm')">Para/IP 변경공유</div>
       <div class="tab active" onclick="switchTab('troubleForm')">부동내역 공유</div>
+      <div class="tab" onclick="switchTab('controlForm')">제어변경 공유</div>
     </div>
 
     <div class="form-container">
@@ -158,12 +193,19 @@
 
         <div class="form-group">
           <label for="para-process">2-1. 공정(process) :</label>
-          <select id="para-process"></select>
+          <select id="para-process" onchange="onProcessChange('para')">
+            <option value="-">-</option>
+            <option value="Electrode Supply">Electrode Supply</option>
+            <option value="Lamination">Lamination</option>
+            <option value="D-Stacking">D-Stacking</option>
+            <option value="Taper">Taper</option>
+            <option value="Inspection">Inspection</option>
+          </select>
         </div>
 
         <div class="form-group">
           <label for="para-unit">2-2. 유닛(unit) :</label>
-          <select id="para-unit">
+          <select id="para-unit" onchange="onUnitChange('para')">
             <option value="-">-</option>
           </select>
         </div>
@@ -236,12 +278,19 @@
 
         <div class="form-group">
           <label for="trouble-process">2-1. 공정(process) :</label>
-          <select id="trouble-process"></select>
+          <select id="trouble-process" onchange="onProcessChange('trouble')">
+            <option value="-">-</option>
+            <option value="Electrode Supply">Electrode Supply</option>
+            <option value="Lamination">Lamination</option>
+            <option value="D-Stacking">D-Stacking</option>
+            <option value="Taper">Taper</option>
+            <option value="Inspection">Inspection</option>
+          </select>
         </div>
 
         <div class="form-group">
           <label for="trouble-unit">2-2. 유닛(unit) :</label>
-          <select id="trouble-unit">
+          <select id="trouble-unit" onchange="onUnitChange('trouble')">
             <option value="-">-</option>
           </select>
         </div>
@@ -285,6 +334,129 @@
 
         <button class="button" onclick="generateTroubleText()">양식 생성하기 (Generate)</button>
       </div>
+
+      <!-- =========================
+           Control Change 폼
+      ========================== -->
+      <div id="controlForm" class="form">
+        <div class="form-group">
+          <label for="control-type">종류(type) :</label>
+          <select id="control-type">
+            <option value="Control Change">Control Change</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="control-site">0. Site (site) :</label>
+          <select id="control-site">
+            <option value="L-H">L-H</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label>1. 호기(machine) : <span style="font-weight:normal;color:#666;">다중 선택 가능</span></label>
+          <button type="button" class="button small-button" onclick="setAllControlMachines(true)">전체 선택</button>
+          <button type="button" class="button small-button" onclick="setAllControlMachines(false)">전체 해제</button>
+          <div class="checkbox-group" id="control-machine-group">
+            <label><input type="checkbox" class="control-machine-checkbox" value="1-1" /> 1-1</label>
+            <label><input type="checkbox" class="control-machine-checkbox" value="1-2" /> 1-2</label>
+            <label><input type="checkbox" class="control-machine-checkbox" value="1-3" /> 1-3</label>
+            <label><input type="checkbox" class="control-machine-checkbox" value="2-1" /> 2-1</label>
+            <label><input type="checkbox" class="control-machine-checkbox" value="2-2" /> 2-2</label>
+            <label><input type="checkbox" class="control-machine-checkbox" value="2-3" /> 2-3</label>
+            <label><input type="checkbox" class="control-machine-checkbox" value="3-1" /> 3-1</label>
+            <label><input type="checkbox" class="control-machine-checkbox" value="3-2" /> 3-2</label>
+            <label><input type="checkbox" class="control-machine-checkbox" value="3-3" /> 3-3</label>
+            <label><input type="checkbox" class="control-machine-checkbox" value="4-1" /> 4-1</label>
+            <label><input type="checkbox" class="control-machine-checkbox" value="4-2" /> 4-2</label>
+            <label><input type="checkbox" class="control-machine-checkbox" value="4-3" /> 4-3</label>
+            <label><input type="checkbox" class="control-machine-checkbox" value="5-1" /> 5-1</label>
+            <label><input type="checkbox" class="control-machine-checkbox" value="5-2" /> 5-2</label>
+            <label><input type="checkbox" class="control-machine-checkbox" value="5-3" /> 5-3</label>
+            <label><input type="checkbox" class="control-machine-checkbox" value="6-1" /> 6-1</label>
+            <label><input type="checkbox" class="control-machine-checkbox" value="6-2" /> 6-2</label>
+            <label><input type="checkbox" class="control-machine-checkbox" value="6-3" /> 6-3</label>
+            <label><input type="checkbox" class="control-machine-checkbox" value="6-4" /> 6-4</label>
+            <label><input type="checkbox" class="control-machine-checkbox" value="HC1" /> HC1</label>
+            <label><input type="checkbox" class="control-machine-checkbox" value="HC2" /> HC2</label>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="control-process">2-1. 공정(process) :</label>
+          <select id="control-process" onchange="onProcessChange('control')">
+            <option value="-">-</option>
+            <option value="Electrode Supply">Electrode Supply</option>
+            <option value="Lamination">Lamination</option>
+            <option value="D-Stacking">D-Stacking</option>
+            <option value="Taper">Taper</option>
+            <option value="Inspection">Inspection</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="control-unit">2-2. 유닛(unit) :</label>
+          <select id="control-unit" onchange="onUnitChange('control')">
+            <option value="-">-</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="control-assy">2-3. 어셈블리(assy) :</label>
+          <select id="control-assy">
+            <option value="-">-</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="control-time">3. 변경시간(change time) :</label>
+          <input type="datetime-local" id="control-time" />
+        </div>
+
+        <div class="form-group">
+          <label for="control-worker">4. 변경자(worker) :</label>
+          <input type="text" id="control-worker" placeholder="작업자 이름 / Worker name" />
+        </div>
+
+        <div class="form-group">
+          <label for="control-change-type">5. 변경종류(change type) :</label>
+          <select id="control-change-type">
+            <option value="PLC">PLC</option>
+            <option value="PMAC">PMAC</option>
+            <option value="HMI">HMI</option>
+            <option value="Vision">Vision</option>
+            <option value="Cell Tracking">Cell Tracking</option>
+            <option value="Servo">Servo</option>
+            <option value="Robot">Robot</option>
+            <option value="Safety">Safety</option>
+            <option value="Network">Network</option>
+            <option value="Other">Other</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="control-content">6. 변경내용(change content) :</label>
+          <textarea id="control-content" placeholder="변경 내용 / Change content"></textarea>
+        </div>
+
+        <div class="form-group">
+          <label for="control-reason">7. 변경사유(reason) :</label>
+          <textarea id="control-reason" placeholder="변경 사유 / Reason"></textarea>
+        </div>
+
+        <div class="form-group">
+          <label for="control-area">8. 영향범위(affected area) :</label>
+          <textarea id="control-area" placeholder="영향 범위 / Affected area"></textarea>
+        </div>
+
+        <div class="form-group">
+          <label for="control-validation">9. 검증결과(validation) :</label>
+          <textarea id="control-validation" placeholder="검증 결과 / Validation result"></textarea>
+        </div>
+
+        <button class="button" onclick="generateControlText()">양식 생성하기 (Generate)</button>
+      </div>
+
 
       <!-- 결과 표시 -->
       <div id="result" class="result">
@@ -374,16 +546,17 @@
     }
 
     function switchTab(formId) {
+      const tabIndexMap = {
+        parameterForm: 0,
+        troubleForm: 1,
+        controlForm: 2
+      };
+
       document.querySelectorAll('.tab').forEach(tab => tab.classList.remove('active'));
       document.querySelectorAll('.form').forEach(form => form.classList.remove('active'));
 
-      if (formId === 'parameterForm') {
-        document.querySelectorAll('.tab')[0].classList.add('active');
-        document.getElementById('parameterForm').classList.add('active');
-      } else {
-        document.querySelectorAll('.tab')[1].classList.add('active');
-        document.getElementById('troubleForm').classList.add('active');
-      }
+      document.querySelectorAll('.tab')[tabIndexMap[formId]].classList.add('active');
+      document.getElementById(formId).classList.add('active');
       document.getElementById('result').style.display = 'none';
     }
 
@@ -452,6 +625,27 @@
       unitSelect.value = '-';
     }
 
+    function resetAssyOptions(assySelect) {
+      assySelect.innerHTML = '<option value="-">-</option>';
+      assySelect.value = '-';
+    }
+
+    function onProcessChange(prefix) {
+      const processEl = document.getElementById(`${prefix}-process`);
+      const unitEl = document.getElementById(`${prefix}-unit`);
+      const assyEl = document.getElementById(`${prefix}-assy`);
+      if (!processEl || !unitEl || !assyEl) return;
+      fillUnitOptions(unitEl, processEl.value);
+      resetAssyOptions(assyEl);
+    }
+
+    function onUnitChange(prefix) {
+      const unitEl = document.getElementById(`${prefix}-unit`);
+      const assyEl = document.getElementById(`${prefix}-assy`);
+      if (!unitEl || !assyEl) return;
+      fillAssyOptions(assyEl, unitEl.value);
+    }
+
     document.getElementById('para-process').addEventListener('change', function () {
       fillUnitOptions(document.getElementById('para-unit'), this.value);
       document.getElementById('para-assy').innerHTML = '<option value="-">-</option>';
@@ -460,6 +654,11 @@
     document.getElementById('trouble-process').addEventListener('change', function () {
       fillUnitOptions(document.getElementById('trouble-unit'), this.value);
       document.getElementById('trouble-assy').innerHTML = '<option value="-">-</option>';
+    });
+
+    document.getElementById('control-process').addEventListener('change', function () {
+      fillUnitOptions(document.getElementById('control-unit'), this.value);
+      document.getElementById('control-assy').innerHTML = '<option value="-">-</option>';
     });
 
     /***********************
@@ -718,6 +917,10 @@
       fillAssyOptions(document.getElementById('trouble-assy'), this.value);
     });
 
+    document.getElementById('control-unit').addEventListener('change', function () {
+      fillAssyOptions(document.getElementById('control-assy'), this.value);
+    });
+
     /***********************
      * 시간 제약 (현재 +24h)
      ***********************/
@@ -826,14 +1029,82 @@
       setTimeout(selectResultText, 0);
     }
 
+    function renderControlMachineCheckboxes() {
+      const group = document.getElementById('control-machine-group');
+      if (!group) return;
+      // 체크박스가 HTML에 이미 있으면 그대로 사용합니다. 일부 모바일/인앱 브라우저에서 load 렌더링 누락 방지용입니다.
+      if (group.querySelectorAll('input[type="checkbox"]').length > 0) return;
+      LH_MACHINES.filter(m => m !== '-').forEach(machine => {
+        const label = document.createElement('label');
+        const checkbox = document.createElement('input');
+        checkbox.type = 'checkbox';
+        checkbox.className = 'control-machine-checkbox';
+        checkbox.value = machine;
+        label.appendChild(checkbox);
+        label.appendChild(document.createTextNode(' ' + machine));
+        group.appendChild(label);
+      });
+    }
+
+    function setAllControlMachines(checked) {
+      document.querySelectorAll('#control-machine-group input[type="checkbox"]').forEach(cb => {
+        cb.checked = checked;
+      });
+    }
+
+    function getSelectedControlMachines() {
+      const selected = Array.from(document.querySelectorAll('#control-machine-group input:checked'))
+        .map(cb => cb.value);
+      return selected.length ? selected.join(', ') : '-';
+    }
+
+    function generateControlText() {
+      const type = document.getElementById('control-type').value;
+      const site = document.getElementById('control-site').value;
+      const machine = getSelectedControlMachines();
+      const process = document.getElementById('control-process').value;
+      const unit = document.getElementById('control-unit').value;
+      const assy = document.getElementById('control-assy').value;
+      const time = formatDateTime(document.getElementById('control-time').value);
+      const worker = document.getElementById('control-worker').value;
+      const changeType = document.getElementById('control-change-type').value;
+      const content = document.getElementById('control-content').value;
+      const reason = document.getElementById('control-reason').value;
+      const area = document.getElementById('control-area').value;
+      const validation = document.getElementById('control-validation').value;
+
+      let text = `[제어변경 공유 (Control Change)]\n`;
+      text += `종류(type): ${type}\n`;
+      text += `0. Site (site) : ${site}\n`;
+      text += `1. 호기(machine) : ${machine}\n`;
+      text += `2-1. 공정(process) : ${process}\n`;
+      text += `2-2. 유닛(unit) : ${unit}\n`;
+      text += `2-3. 어셈블리(assy) : ${assy}\n`;
+      text += `3. 변경시간(change time) : ${time}\n`;
+      text += `4. 변경자(worker) : ${worker}\n`;
+      text += `5. 변경종류(change type) : ${changeType}\n`;
+      text += `6. 변경내용(change content) : ${content}\n`;
+      text += `7. 변경사유(reason) : ${reason}\n`;
+      text += `8. 영향범위(affected area) : ${area}\n`;
+      text += `9. 검증결과(validation) : ${validation}`;
+
+      document.getElementById('resultText').innerText = text;
+      document.getElementById('result').style.display = 'block';
+      setTimeout(selectResultText, 0);
+    }
+
     /***********************
      * ✅ 업로드 버튼만 눌러도:
      * 자동 생성 → 업로드 → 자동복사 → 자동선택
      ***********************/
     function ensureGenerated() {
-      const activeTrouble = document.getElementById('troubleForm').classList.contains('active');
-      if (activeTrouble) generateTroubleText();
-      else generateParameterText();
+      if (document.getElementById('troubleForm').classList.contains('active')) {
+        generateTroubleText();
+      } else if (document.getElementById('controlForm').classList.contains('active')) {
+        generateControlText();
+      } else {
+        generateParameterText();
+      }
     }
 
     async function uploadAndAutoCopy() {
@@ -859,6 +1130,7 @@
       showToast("⏳ 시트 저장 중... / Saving to Google Sheet...");
 
       const isTrouble = fullText.startsWith("[부동&작업 공유");
+      const isControl = fullText.startsWith("[제어변경 공유");
 
       const troubleLabels = [
         "종류(type):",
@@ -889,8 +1161,24 @@
         "8. 변경사유(reason) :",
       ];
 
+      const controlLabels = [
+        "종류(type):",
+        "0. Site (site) :",
+        "1. 호기(machine) :",
+        "2-1. 공정(process) :",
+        "2-2. 유닛(unit) :",
+        "2-3. 어셈블리(assy) :",
+        "3. 변경시간(change time) :",
+        "4. 변경자(worker) :",
+        "5. 변경종류(change type) :",
+        "6. 변경내용(change content) :",
+        "7. 변경사유(reason) :",
+        "8. 영향범위(affected area) :",
+        "9. 검증결과(validation) :",
+      ];
+
       const getValue = (label) => {
-        const labels = isTrouble ? troubleLabels : paraLabels;
+        const labels = isTrouble ? troubleLabels : (isControl ? controlLabels : paraLabels);
         const start = fullText.indexOf(label);
         if (start === -1) return "";
         const valueStart = start + label.length;
@@ -919,6 +1207,25 @@
           problem: getValue("5. 현상(symptom) :"),
           reason: getValue("6. 원인(cause) :"),
           action: getValue("7. 조치(action) :"),
+        };
+      } else if (isControl) {
+        data = {
+          type: "Control Change",
+          site: getValue("0. Site (site) :"),
+          machine: "'" + getValue("1. 호기(machine) :"),
+          process: getValue("2-1. 공정(process) :"),
+          unit: getValue("2-2. 유닛(unit) :"),
+          assy: getValue("2-3. 어셈블리(assy) :"),
+          time: getValue("3. 변경시간(change time) :"),
+          worker: getValue("4. 변경자(worker) :"),
+          changeType: getValue("5. 변경종류(change type) :"),
+          content: getValue("6. 변경내용(change content) :"),
+          reason: getValue("7. 변경사유(reason) :"),
+          affectedArea: getValue("8. 영향범위(affected area) :"),
+          validation: getValue("9. 검증결과(validation) :"),
+          problem: getValue("6. 변경내용(change content) :"),
+          action: getValue("9. 검증결과(validation) :"),
+          complete: getValue("8. 영향범위(affected area) :"),
         };
       } else {
         data = {
@@ -967,21 +1274,40 @@
 
     /***********************
      * 초기 로드
+     * - 일부 모바일/카톡 인앱 브라우저에서 load 이벤트가 늦거나 누락되어도 동작하도록 보강
      ***********************/
-    window.addEventListener('load', () => {
+    let initialized = false;
+
+    function initializeForm() {
+      if (initialized) return;
+      initialized = true;
+
       setCurrentDateTime('para-time');
       setCurrentDateTime('trouble-time');
       setCurrentDateTime('trouble-complete');
+      setCurrentDateTime('control-time');
 
       updateMaxConstraints();
       completeEl.min = startEl.value;
 
       setOptions('para-machine', LH_MACHINES);
       setOptions('trouble-machine', LH_MACHINES);
+      renderControlMachineCheckboxes();
 
       setProcessOptions('para-process');
       setProcessOptions('trouble-process');
-    });
+      setProcessOptions('control-process');
+
+      // 제어변경 탭 공정/유닛/어셈블리 초기화 보장
+      onProcessChange('control');
+    }
+
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', initializeForm);
+      window.addEventListener('load', initializeForm);
+    } else {
+      initializeForm();
+    }
   </script>
 </body>
 </html>
